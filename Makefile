@@ -5,7 +5,7 @@ install:
 
 #Билд фронтенда
 build:
-	rm -rf fronten/dist
+	rm -rf frontend/dist
 	npm run build
 
 #Старт сервера
