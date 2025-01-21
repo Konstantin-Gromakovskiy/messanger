@@ -17,8 +17,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run build --prefix frontend",
     "start": "start-server -s ./frontend/dist",
-    "postinstall": "cd frontend && npm ci",
-    "develop": "cd frontend && npm run dev"
+    "frontend-ci": "cd frontend && npm ci",
+    "develop": "cd frontend && npm run dev",
+    "preview": "npm run preview --prefix frontend"
   },
   "dependencies": {
     "@hexlet/chat-server": "^2.0.4"
