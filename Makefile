@@ -9,10 +9,10 @@ build:
 	npm run build
 
 #Старт сервера
-make start-backend:
+start-backend:
 	npm run start
 
-make develop:
+develop:
 	npm run develop
 
 
