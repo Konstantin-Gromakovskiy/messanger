@@ -1,7 +1,7 @@
 #Установка зависомотей в корневой деррикотрии и у фронтенда
 install:
 	npm ci
-	npm run frontend-ci
+	npm run postinstall
 
 #Билд фронтенда
 build:
