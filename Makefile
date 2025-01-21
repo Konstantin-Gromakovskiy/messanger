@@ -12,7 +12,7 @@ build:
 make start-backend:
 	npm run start
 
-#make develop:
-#	make start-backend & make start-frontend
+make develop:
+	npm run develop
 
 
