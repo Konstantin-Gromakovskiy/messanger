@@ -17,7 +17,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run build --prefix frontend",
     "start": "start-server -s ./frontend/dist",
-    "frontend-ci": "cd frontend && npm ci",
+    "postinstall": "cd frontend && npm ci",
     "develop": "cd frontend && npm run dev",
     "preview": "npm run preview --prefix frontend"
   },
