@@ -1,38 +1,60 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import react from 'eslint-plugin-react'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineFlatConfig } from 'eslint-define-config';
+import airbnbConfig from 'eslint-config-airbnb';
+import reactPlugin from 'eslint-plugin-react';
+import functionalPlugin from 'eslint-plugin-functional';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
 
-export default [
-  { ignores: ['dist'] },
+export default defineFlatConfig([
+  // Добавляем настройки из airbnbConfig
+  airbnbConfig,
   {
-    files: ['**/*.{js,jsx}'],
+    files: ['**/*.js', '**/*.jsx'],
     languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
+      ecmaVersion: 'latest',
+      sourceType: 'module',
       parserOptions: {
-        ecmaVersion: 'latest',
-        ecmaFeatures: { jsx: true },
-        sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      globals: {
+        window: 'readonly',
+        document: 'readonly',
       },
     },
-    settings: { react: { version: '18.3' } },
     plugins: {
-      react,
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
+      react: reactPlugin,
+      functional: functionalPlugin,
+      'react-hooks': reactHooksPlugin,
     },
     rules: {
-      ...js.configs.recommended.rules,
-      ...react.configs.recommended.rules,
-      ...react.configs['jsx-runtime'].rules,
-      ...reactHooks.configs.recommended.rules,
-      'react/jsx-no-target-blank': 'off',
-      'react-refresh/only-export-components': [
+      'import/extensions': 'off',
+      'import/no-unresolved': 'off',
+      'react/prop-types': 'off',
+      'no-console': 'off',
+      'react/react-in-jsx-scope': 'off',
+      'functional/no-conditional-statements': 'off',
+      'functional/no-expression-statements': 'off',
+      'functional/immutable-data': 'off',
+      'functional/functional-parameters': 'off',
+      'functional/no-try-statements': 'off',
+      'functional/no-throw-statements': 'off',
+      'functional/no-return-void': 'off',
+      'no-underscore-dangle': ['error', { allow: ['__filename', '__dirname'] }],
+      'react/function-component-definition': [
+        'error',
+        { namedComponents: 'arrow-function' },
+      ],
+      'testing-library/no-debug': 'off',
+      'react/jsx-filename-extension': [
         'warn',
-        { allowConstantExport: true },
+        { extensions: ['.js', '.jsx'] },
       ],
     },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
   },
-]
+]);
