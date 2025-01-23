@@ -1,40 +1,14 @@
-import { useState } from 'react';
-import viteLogo from './vite.svg';
-import './App.css';
+import { Route, Routes } from 'react-router';
+import Layout from './components/Layout.jsx';
+import NotFoundPage from './components/NotFoundPage.jsx';
 
-const App = () => {
-  const [count, setCount] = useState(0);
+const App = () => (
+  <Routes>
+    <Route path="/" element={<Layout />}>
+      <Route path="*" element={<NotFoundPage />} />
+    </Route>
+  </Routes>
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src="./assets/react.svg" className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite +++++ React Tooolkiiit</h1>
-      <div className="card">
-        <button type="button" onClick={() => setCount((counts) => counts + 1)}>
-          count is
-          {' '}
-          {count}
-        </button>
-        <p>
-          Edit
-          {' '}
-          <code>src/App.jsx</code>
-          {' '}
-          and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  );
-};
+);
 
 export default App;
