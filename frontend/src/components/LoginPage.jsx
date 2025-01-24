@@ -1,5 +1,8 @@
 import { useFormik } from 'formik';
 import axios from 'axios';
+import {
+  Card, Form, FloatingLabel, Button,
+} from 'react-bootstrap';
 import loginAvatar from '../assets/login-avatar.jpg';
 
 const LoginPage = () => {
@@ -18,50 +21,48 @@ const LoginPage = () => {
     <div className="container-fluid h-100">
       <div className="row h-100 justify-content-center align-items-center">
         <div className="col-12 col-md-8 col-xxl-6">
-          <div className="card shadow-sm">
-            <div className="card-body row p-5">
+          <Card className="shadow-sm">
+            <Card.Body className="row p-5">
               <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
-                <img alt="Войти" className="rounded-circle" src={loginAvatar} />
+                <img src={loginAvatar} className="rounded-circle" />
               </div>
-              <form onSubmit={formik.handleSubmit} className="col-12 col-md-6 mt-3 mt-md-0s">
+              <Form className="col-12 col-md-6 mt-3 mt-md-0">
                 <h1 className="text-center mb-4">Войти</h1>
-                <div className="form-floating mb-3">
-                  <input
-                    name="username"
-                    autoComplete="username"
+                <FloatingLabel className="mb-3" label="Ваш ник">
+                  <Form.Control
                     required
-                    placeholder="Ваш ник"
-                    id="username"
                     className="form-control"
+                    autoComplete="username"
+                    type="text"
+                    name="username"
+                    placeholder="Ваш ник"
                     value={formik.values.username}
                     onChange={formik.handleChange}
                   />
-                  <label htmlFor="username">Ваш ник</label>
-                </div>
-                <div className="form-floating mb-4">
-                  <input
-                    className="form-control"
-                    name="password"
-                    id="password"
-                    type="password"
-                    placeholder="Пароль"
+                </FloatingLabel>
+                <FloatingLabel className="mb-4" label="Пароль">
+                  <Form.Control
                     required
+                    className="form-control"
                     autoComplete="current-password"
+                    type="password"
+                    name="password"
+                    placeholder="Пароль"
                     value={formik.values.password}
                     onChange={formik.handleChange}
                   />
-                  <label className="form-label" htmlFor="password">Пароль</label>
-                </div>
-                <button className="btn btn-outline-primary w-100 mb-3" type="submit">Войти</button>
-              </form>
-            </div>
-            <div className="card-footer p-4">
-              <div className="text-center">
-                <span>Нет аккаунта? </span>
-                <a href="/register">Регистрация</a>
-              </div>
-            </div>
-          </div>
+                </FloatingLabel>
+                <Button type="submit" variant="outline-primary" className="w-100 mb-3">Войти</Button>
+              </Form>
+            </Card.Body>
+            <Card.Footer className="text-center py-4">
+              <span>
+                Нет аккаунта?
+                {' '}
+              </span>
+              <a href="/register">Регистрация</a>
+            </Card.Footer>
+          </Card>
         </div>
       </div>
     </div>
