@@ -24,7 +24,7 @@ const LoginPage = () => {
           <Card className="shadow-sm">
             <Card.Body className="row p-5">
               <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
-                <img src={loginAvatar} className="rounded-circle" />
+                <img alt="Login avatar" src={loginAvatar} className="rounded-circle" />
               </div>
               <Form className="col-12 col-md-6 mt-3 mt-md-0">
                 <h1 className="text-center mb-4">Войти</h1>
