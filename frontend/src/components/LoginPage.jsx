@@ -5,16 +5,13 @@ import {
   Card, Form, FloatingLabel, Button,
 } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
 import loginAvatar from '../assets/login-avatar.jpg';
-import { logIn } from '../redux/store/authSlice.js';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
   const fromPage = location.state?.from?.pathname || '/';
-  const loggedIn = useSelector((state) => state.auth.isAuth);
+  const localToken = localStorage.getItem('token');
 
   const [authFailed, setAuthFailed] = useState(false);
   const formik = useFormik({
@@ -28,7 +25,6 @@ const LoginPage = () => {
         const response = await axios.post('/api/v1/login', { ...values });
         const { token } = response.data;
         localStorage.setItem('token', token);
-        dispatch(logIn());
       } catch (error) {
         if (error.isAxiosError && error.response.status === 401) {
           setAuthFailed(true);
@@ -40,13 +36,14 @@ const LoginPage = () => {
   });
 
   useEffect(() => {
-    if (loggedIn) {
+    if (localToken) {
       navigate(fromPage, { replace: true });
     }
-  }, [loggedIn]);
+  }, [localToken, navigate, fromPage]);
 
   const isInvalidClass = authFailed ? 'is-invalid' : '';
-  const authErrorElem = authFailed && <div className="invalid-tooltip">Неверные имя пользователя или пароль</div>;
+  const authErrorElem = authFailed
+    && <div className="invalid-tooltip">Неверные имя пользователя или пароль</div>;
 
   return (
     <div className="container-fluid h-100">
@@ -84,7 +81,13 @@ const LoginPage = () => {
                   />
                   {authErrorElem}
                 </FloatingLabel>
-                <Button type="submit" variant="outline-primary" className="w-100 mb-3">Войти</Button>
+                <Button
+                  type="submit"
+                  variant="outline-primary"
+                  className="w-100 mb-3"
+                >
+                  Войти
+                </Button>
               </Form>
             </Card.Body>
             <Card.Footer className="text-center py-4">
