@@ -1,47 +1,28 @@
 import { Nav } from 'react-bootstrap';
 import cn from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
-import { useState, useEffect } from 'react';
-import { setChannels } from '../redux/store/channelsSlice.js';
-import { setMessages } from '../redux/store/messageSlice.js';
-import {
-  useGetChannelsQuery, useGetMessagesQuery, useAddTestMessageMutation,
-} from '../redux/store/channelsApi.js';
+import { setCurrentChannelId } from '../redux/store/currentChannelId.js';
+import { useGetChannelsQuery } from '../redux/store/channelsApi.js';
+import { useAddTestMessageMutation } from '../redux/store/messagesApi.js';
 
 const MainPage = () => {
-  const dispatch = useDispatch();
-  const { data: channelsData = [], isSuccess: channelsIsSuccess } = useGetChannelsQuery();
-  const { data: messagesData = [], isSuccess: messagesIsSuccess } = useGetMessagesQuery();
+  const { data: channels = [] } = useGetChannelsQuery();
   const [addTestMessage] = useAddTestMessageMutation();
-
-  const [activeChannelId, setActiveChannelId] = useState('1');
-  console.log(messagesData, 'messages');
-
-  console.log(typeof messagesData, 'typeof messagesData');
-
-  useEffect(() => {
-    if (!channelsIsSuccess) return;
-    dispatch(setChannels(channelsData));
-  }, [channelsIsSuccess, dispatch, channelsData]);
-
-  useEffect(() => {
-    if (!messagesIsSuccess) return;
-    dispatch(setMessages(messagesData));
-  }, [messagesIsSuccess, dispatch, messagesData]);
+  const { currentChannelId } = useSelector((state) => state.ui);
+  const dispatch = useDispatch();
 
   const channelBtnClass = (channelId, activeId) => cn(
     'w-100 rounded-0 text-start btn',
     { 'btn-secondary': channelId === activeId },
   );
-  const channels = useSelector((state) => state.channels);
   const channelsListElem = (
     <Nav className="flex-column nav-pills nav-fill px-2 mb3 overflow-auto h-100 d-block">
       {channels.map((item) => (
         <Nav.Item key={item.id} className="w-100">
           <button
-            onClick={() => setActiveChannelId(item.id)}
+            onClick={() => dispatch(setCurrentChannelId(item.id))}
             type="button"
-            className={channelBtnClass(item.id, activeChannelId)}
+            className={channelBtnClass(item.id, currentChannelId)}
           >
             <span className="me-1">
               #
