@@ -4,8 +4,6 @@ import { messagesApi } from './messagesApi.js';
 import currentChannelId from './currentChannelId.js';
 import authSlice from './authSlice.js';
 
-console.log(messagesApi);
-
 export default configureStore({
   reducer: {
     ui: currentChannelId,
