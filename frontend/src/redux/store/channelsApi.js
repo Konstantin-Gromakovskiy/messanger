@@ -7,7 +7,8 @@ export const channelsApi = createApi({
     return {
       getChannels: build.query({
         query: () => {
-          const token = localStorage.getItem('token');
+          const storedUser = localStorage.getItem('user');
+          const token = JSON.parse(storedUser)?.token;
           return {
             url: '',
             headers: { Authorization: `Bearer ${token}` },

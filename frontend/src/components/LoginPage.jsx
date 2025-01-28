@@ -10,10 +10,11 @@ import loginAvatar from '../assets/login-avatar.jpg';
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const fromPage = location.state?.from?.pathname || '/';
-  const localToken = localStorage.getItem('token');
-
   const [authFailed, setAuthFailed] = useState(false);
+  const fromPage = location.state?.from?.pathname || '/';
+  const storedUser = localStorage.getItem('user');
+  const token = JSON.parse(storedUser)?.token;
+
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -22,9 +23,10 @@ const LoginPage = () => {
     onSubmit: async (values) => {
       setAuthFailed(null);
       try {
+        const { username } = values;
         const response = await axios.post('/api/v1/login', { ...values });
-        const { token } = response.data;
-        localStorage.setItem('token', token);
+        const { token: requestToken } = response.data;
+        localStorage.setItem('user', JSON.stringify({ token: requestToken, username }));
       } catch (error) {
         if (error.isAxiosError && error.response.status === 401) {
           setAuthFailed(true);
@@ -36,10 +38,10 @@ const LoginPage = () => {
   });
 
   useEffect(() => {
-    if (localToken) {
+    if (token) {
       navigate(fromPage, { replace: true });
     }
-  }, [localToken, navigate, fromPage]);
+  }, [token, navigate, fromPage]);
 
   const isInvalidClass = authFailed ? 'is-invalid' : '';
   const authErrorElem = authFailed
