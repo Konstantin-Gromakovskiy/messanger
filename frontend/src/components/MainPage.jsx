@@ -1,7 +1,7 @@
 import { Nav, Button } from 'react-bootstrap';
 import cn from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCurrentChannelId } from '../redux/store/currentChannelId.js';
+import { setCurrentChannelId, openModal } from '../redux/store/uiSlice.js';
 import { useGetChannelsQuery } from '../redux/store/channelsApi.js';
 import { useAddTestMessageMutation } from '../redux/store/messagesApi.js';
 import ChatContainer from './ChatContainer.jsx';
@@ -42,7 +42,12 @@ const MainPage = () => {
         <div className="col-4 col-md-2 border-end px-0 bg-light flex-column h-100 d-flex">
           <div className="d-flex mt-1 justify-content-between mb-2 ps-4 pe-2 p-4">
             <b>Каналы</b>
-            <Button variant="outline-primary" type="button" className="btn btn-group-vertical p-0 text-primary">
+            <Button
+              onClick={() => dispatch(openModal({ type: 'addChannel' }))}
+              variant="outline-primary"
+              type="button"
+              className="btn btn-group-vertical p-0 text-primary"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 16 16"

@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router';
+import ModalWindow from './ModalWindow.jsx';
 
 const Layout = () => (
   <div className="d-flex flex-column h-100">
@@ -8,6 +9,7 @@ const Layout = () => (
       </div>
     </nav>
     <Outlet />
+    <ModalWindow />
   </div>
 );
 

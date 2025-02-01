@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { channelsApi } from './channelsApi.js';
 import { messagesApi } from './messagesApi.js';
-import currentChannelId from './currentChannelId.js';
+import ui from './uiSlice.js';
 import authSlice from './authSlice.js';
 
 export default configureStore({
   reducer: {
-    ui: currentChannelId,
+    ui,
     auth: authSlice,
     [channelsApi.reducerPath]: channelsApi.reducer,
     [messagesApi.reducerPath]: messagesApi.reducer,
