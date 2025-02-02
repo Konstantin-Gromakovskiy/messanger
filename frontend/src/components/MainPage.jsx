@@ -33,7 +33,7 @@ const MainPage = () => {
       socket.off('removeChannel');
       socket.off('newChannel');
     };
-  }, [currentChannelId]);
+  }, [currentChannelId, defaultChannelId, dispatch]);
 
   const channelBtnClass = (channel) => cn({ 'text-truncate': channel.removable });
 
