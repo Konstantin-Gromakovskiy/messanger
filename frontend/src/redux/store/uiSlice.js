@@ -4,6 +4,7 @@ const currentChannelIdSlice = createSlice({
   name: 'ui',
   initialState: {
     currentChannelId: '1',
+    defaultChannelId: '1',
     modal: {
       isOpen: false,
       type: null,
@@ -15,7 +16,15 @@ const currentChannelIdSlice = createSlice({
       return { ...state, currentChannelId: action.payload };
     },
     openModal(state, action) {
-      return { ...state, modal: { ...action.payload, isOpen: true } };
+      console.log(action, 'action');
+      return {
+        ...state,
+        modal: {
+          extra: { channelId: action.payload.channelId },
+          type: action.payload.type,
+          isOpen: true,
+        },
+      };
     },
     closeModal(state) {
       return { ...state, modal: { type: null, extra: null, isOpen: false } };

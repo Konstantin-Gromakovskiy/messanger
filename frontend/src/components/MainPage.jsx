@@ -1,38 +1,81 @@
-import { Nav, Button } from 'react-bootstrap';
+import {
+  Nav, Button, ButtonGroup, DropdownButton, Dropdown,
+} from 'react-bootstrap';
 import cn from 'classnames';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import io from 'socket.io-client';
 import { setCurrentChannelId, openModal } from '../redux/store/uiSlice.js';
 import { useGetChannelsQuery } from '../redux/store/channelsApi.js';
-import { useAddTestMessageMutation } from '../redux/store/messagesApi.js';
 import ChatContainer from './ChatContainer.jsx';
 
+const socket = io('http://localhost:3000');
+
 const MainPage = () => {
+  const [allChannels, setAllChannels] = useState([]);
   const { data: channels = [] } = useGetChannelsQuery();
-  const [addTestMessage] = useAddTestMessageMutation();
-  const { currentChannelId } = useSelector((state) => state.ui);
+  const { currentChannelId, defaultChannelId } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
 
-  const channelBtnClass = (channelId, activeId) => cn(
-    'w-100 rounded-0 text-start btn',
-    { 'btn-secondary': channelId === activeId },
-  );
+  useEffect(() => {
+    if (channels.length > 0) setAllChannels(channels);
+  }, [channels]);
+
+  useEffect(() => {
+    socket.on('newChannel', (payload) => {
+      setAllChannels((prevChannels) => [...prevChannels, payload]);
+    });
+    socket.on('removeChannel', (payload) => {
+      if (payload.id === currentChannelId) dispatch(setCurrentChannelId(defaultChannelId));
+      setAllChannels((prevChannels) => prevChannels.filter((item) => item.id !== payload.id));
+    });
+    return () => {
+      socket.off('removeChannel');
+      socket.off('newChannel');
+    };
+  }, [currentChannelId]);
+
+  const channelBtnClass = (channel) => cn({ 'text-truncate': channel.removable });
+
   const channelsListElem = (
     <Nav className="flex-column nav-pills nav-fill px-2 mb3 overflow-auto h-100 d-block">
-      {channels.map((item) => (
-        <Nav.Item key={item.id} className="w-100">
-          <button
-            onClick={() => dispatch(setCurrentChannelId(item.id))}
+      {allChannels.map((channel) => {
+        const btnElem = (
+          <Button
+            variant={channel.id === currentChannelId ? 'secondary' : 'light'}
+            onClick={() => dispatch(setCurrentChannelId(channel.id))}
             type="button"
-            className={channelBtnClass(item.id, currentChannelId)}
+            className={`w-100 text-start btn ${channelBtnClass(channel)}`}
           >
-            <span className="me-1">
-              #
-              {' '}
-              {item.name}
-            </span>
-          </button>
-        </Nav.Item>
-      ))}
+            <span className="me-1">{`# ${channel.name}`}</span>
+          </Button>
+        );
+
+        return (
+          <Nav.Item key={channel.id} className="w-100">
+            {channel.removable
+              ? (
+                <ButtonGroup className="d-flex dropdown">
+                  {btnElem}
+                  <DropdownButton
+                    variant={channel.id === currentChannelId ? 'secondary' : 'light'}
+                    as={ButtonGroup}
+                    title=""
+                  >
+                    <Dropdown.Item
+                      onClick={() => dispatch(openModal({ type: 'removeChannel', channelId: channel.id }))}
+                      className="btn btn-secondary"
+                    >
+                      Удалить
+                    </Dropdown.Item>
+                    <Dropdown.Item className="btn btn-secondary">Переименовать</Dropdown.Item>
+                  </DropdownButton>
+                </ButtonGroup>
+              )
+              : btnElem}
+          </Nav.Item>
+        );
+      })}
     </Nav>
   );
 
@@ -61,13 +104,6 @@ const MainPage = () => {
             </Button>
           </div>
           {channelsListElem}
-          <button
-            type="button"
-            onClick={() => addTestMessage()}
-            className="btn btn-group-vertical p-0 bg-primary text-white m-3"
-          >
-            add test message
-          </button>
         </div>
         <ChatContainer />
       </div>

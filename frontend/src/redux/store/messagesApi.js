@@ -27,28 +27,11 @@ export const messagesApi = createApi({
           };
         },
       }),
-      addTestMessage: build.mutation({
-        query: () => {
-          const storedUser = localStorage.getItem('user');
-          const token = JSON.parse(storedUser)?.token;
-          return {
-            url: '',
-            method: 'POST',
-            headers: { Authorization: `Bearer ${token}` },
-            body: {
-              body: 'test message',
-              channelId: '1',
-              username: 'test',
-            },
-          };
-        },
-      }),
     };
   },
 });
 
 export const {
   useGetMessagesQuery,
-  useAddTestMessageMutation,
   useAddMessageMutation,
 } = messagesApi;

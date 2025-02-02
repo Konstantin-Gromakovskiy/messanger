@@ -12,9 +12,9 @@ const ChatContainer = () => {
   const { data: channels = [] } = useGetChannelsQuery();
   const { data: messages = [] } = useGetMessagesQuery();
   const [addMessage, { isLoading }] = useAddMessageMutation();
-  const activeChannel = channels.find((item) => item.id === activeChannelId);
   const [currentInput, setCurrentInput] = useState('');
   const [newMessages, setNewMessages] = useState([]);
+  const [newChannels, setNewChannels] = useState([]);
   const allChannelMessages = [...messages, ...newMessages]
     .filter((message) => message.channelId === activeChannelId);
 
@@ -23,10 +23,14 @@ const ChatContainer = () => {
     socket.on('newMessage', (payload) => {
       setNewMessages((prevMessages) => [...prevMessages, payload]);
     });
+    socket.on('newChannel', (payload) => {
+      setNewChannels((prevChannels) => [...prevChannels, payload]);
+    });
     return () => {
       socket.off('newMessage');
     };
   }, []);
+  const activeChannel = [...channels, ...newChannels].find((item) => item.id === activeChannelId);
 
   const sendMessage = async (e) => {
     e.preventDefault();
