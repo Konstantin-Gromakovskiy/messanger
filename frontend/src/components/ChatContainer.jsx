@@ -1,36 +1,31 @@
 import { io } from 'socket.io-client';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
-import { useGetChannelsQuery } from '../redux/store/channelsApi.js';
-import { useGetMessagesQuery, useAddMessageMutation } from '../redux/store/messagesApi.js';
+import { useGetMessagesQuery, useAddMessageMutation, messagesApi } from '../redux/store/messagesApi.js';
 import '../styles/ChatContainer.css';
 
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
+// TODO: причесать этот компонент, может быть лишняя логика
+
 const ChatContainer = () => {
+  const dispatch = useDispatch();
   const activeChannelId = useSelector((state) => state.ui.currentChannelId);
   const username = JSON.parse(localStorage.getItem('user'))?.username;
-  const { data: channels = [] } = useGetChannelsQuery();
   const { data: messages = [] } = useGetMessagesQuery();
   const [addMessage, { isLoading }] = useAddMessageMutation();
   const [currentInput, setCurrentInput] = useState('');
-  const [newMessages, setNewMessages] = useState([]);
-  const [newChannels, setNewChannels] = useState([]);
-  const allChannelMessages = [...messages, ...newMessages]
-    .filter((message) => message.channelId === activeChannelId);
 
   useEffect(() => {
-    const socket = io('http://localhost:3000');
+    const socket = io(`${apiUrl}`);
     socket.on('newMessage', (payload) => {
-      setNewMessages((prevMessages) => [...prevMessages, payload]);
-    });
-    socket.on('newChannel', (payload) => {
-      setNewChannels((prevChannels) => [...prevChannels, payload]);
+      dispatch(messagesApi.util.updateQueryData('getMessages', undefined, (draft) => [...draft, payload]));
     });
     return () => {
       socket.off('newMessage');
     };
   }, []);
-  const activeChannel = [...channels, ...newChannels].find((item) => item.id === activeChannelId);
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -40,14 +35,13 @@ const ChatContainer = () => {
     setCurrentInput('');
   };
 
-  const messagesCountEl = messages && <span className="text-muted">{`${allChannelMessages.length} сообщений`}</span>;
-  const messagesBoxEl = (
+  const messagesCountEl = messages && <span className="text-muted">{`${messages.length} сообщений`}</span>;
+  const messagesList = (
     <div className="overflow-auto px-5">
-      {allChannelMessages.map((message) => (
+      {messages.map((message) => (
         <div key={message.id} className="text-break mb-2">
           <b>{message.username}</b>
-          {': '}
-          {message.body}
+          {`: ${message.body}`}
         </div>
       ))}
     </div>
@@ -58,11 +52,11 @@ const ChatContainer = () => {
       <div className="d-flex flex-column h-100">
         <div className="bg-light mb-4 p-3 shadow-sm small">
           <p className="m-0">
-            <b>{activeChannel && `# ${activeChannel.name}`}</b>
+            <b>null</b>
           </p>
           {messagesCountEl}
         </div>
-        {messagesBoxEl}
+        {messagesList}
         <div className="mt-auto px-5 py-3">
           <Form onSubmit={sendMessage} noValidate className="">
             <InputGroup size="sm">

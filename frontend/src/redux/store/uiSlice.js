@@ -20,7 +20,9 @@ const currentChannelIdSlice = createSlice({
       return {
         ...state,
         modal: {
-          extra: { channelId: action.payload.channelId },
+          extra: {
+            channelId: action.payload.channelId,
+          },
           type: action.payload.type,
           isOpen: true,
         },

@@ -2,36 +2,42 @@ import {
   Nav, Button, ButtonGroup, DropdownButton, Dropdown,
 } from 'react-bootstrap';
 import cn from 'classnames';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import io from 'socket.io-client';
 import { setCurrentChannelId, openModal } from '../redux/store/uiSlice.js';
-import { useGetChannelsQuery } from '../redux/store/channelsApi.js';
+import { useGetChannelsQuery, channelsApi } from '../redux/store/channelsApi.js';
 import ChatContainer from './ChatContainer.jsx';
 
-const socket = io('http://localhost:3000');
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
+// TODO добавить в редакс название актуального канала,
+//  чтобы использовать его в ChatContainer и в ModalWindow
 
 const MainPage = () => {
-  const [allChannels, setAllChannels] = useState([]);
   const { data: channels = [] } = useGetChannelsQuery();
   const { currentChannelId, defaultChannelId } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (channels.length > 0) setAllChannels(channels);
-  }, [channels]);
-
-  useEffect(() => {
+    const socket = io(`${apiUrl}`);
     socket.on('newChannel', (payload) => {
-      setAllChannels((prevChannels) => [...prevChannels, payload]);
+      dispatch(channelsApi.util.updateQueryData('getChannels', undefined, (draft) => [...draft, payload]));
     });
     socket.on('removeChannel', (payload) => {
       if (payload.id === currentChannelId) dispatch(setCurrentChannelId(defaultChannelId));
-      setAllChannels((prevChannels) => prevChannels.filter((item) => item.id !== payload.id));
+      dispatch(channelsApi.util.updateQueryData('getChannels', undefined, (draft) => draft.filter((item) => item.id !== payload.id)));
+    });
+    socket.on('renameChannel', (payload) => {
+      dispatch(channelsApi.util.updateQueryData('getChannels', undefined, (draft) => draft.map((item) => {
+        if (item.id === payload.id) return { ...payload };
+        return item;
+      })));
     });
     return () => {
       socket.off('removeChannel');
       socket.off('newChannel');
+      socket.off('renameChannel');
     };
   }, [currentChannelId, defaultChannelId, dispatch]);
 
@@ -39,7 +45,7 @@ const MainPage = () => {
 
   const channelsListElem = (
     <Nav className="flex-column nav-pills nav-fill px-2 mb3 overflow-auto h-100 d-block">
-      {allChannels.map((channel) => {
+      {channels.map((channel) => {
         const btnElem = (
           <Button
             variant={channel.id === currentChannelId ? 'secondary' : 'light'}
@@ -68,7 +74,16 @@ const MainPage = () => {
                     >
                       Удалить
                     </Dropdown.Item>
-                    <Dropdown.Item className="btn btn-secondary">Переименовать</Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => dispatch(openModal({
+                        type: 'renameChannel',
+                        channelId: channel.id,
+                        channelName: channel.name,
+                      }))}
+                      className="btn btn-secondary"
+                    >
+                      Переименовать
+                    </Dropdown.Item>
                   </DropdownButton>
                 </ButtonGroup>
               )
