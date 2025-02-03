@@ -25,7 +25,7 @@ const ChatContainer = () => {
     return () => {
       socket.off('newMessage');
     };
-  }, []);
+  }, [dispatch);
 
   const sendMessage = async (e) => {
     e.preventDefault();
