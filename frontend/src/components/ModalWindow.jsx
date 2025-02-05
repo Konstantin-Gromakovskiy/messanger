@@ -1,12 +1,16 @@
 import { Button, Modal, Form } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import cn from 'classnames';
+import * as yup from 'yup';
 import { closeModal, setCurrentChannelId } from '../redux/store/uiSlice.js';
-import { useAddChannelMutation, useRemoveChannelMutation, useRenameChannelMutation } from '../redux/store/channelsApi.js';
+import {
+  useAddChannelMutation, useRemoveChannelMutation, useRenameChannelMutation, useGetChannelsQuery,
+} from '../redux/store/channelsApi.js';
 
 const ModalWindow = () => {
+  const { data: channels = [] } = useGetChannelsQuery();
   const dispatch = useDispatch();
   const { modal, currentChannelId, defaultChannelId } = useSelector((state) => state.ui);
   const { isOpen, type, extra } = modal;
@@ -14,12 +18,28 @@ const ModalWindow = () => {
   const [removeChannelMutation] = useRemoveChannelMutation();
   const [renameChannelMutation] = useRenameChannelMutation();
   const inputRef = useRef();
-  const [error, setError] = useState(null);
 
+  yup.setLocale({
+    string: {
+      min: 'Минимум 3 символов',
+      max: 'Максимум 20 символов',
+      notOneOf: 'Такое имя уже используется',
+      required: 'Обязательное поле',
+    },
+  });
+
+  const inputSchema = yup.object().shape({
+    inputValue: yup.string().trim().min(3).max(20)
+      .notOneOf(channels.map((channel) => channel.name), 'Такое имя уже используется')
+      .required('Обязательное поле'),
+  });
   const formik = useFormik({
     initialValues: {
       inputValue: '',
     },
+    validationSchema: inputSchema,
+    validateOnChange: false,
+    validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
       if (type === 'addChannel') {
         const response = await addChannelMutation(values.inputValue);
@@ -33,7 +53,10 @@ const ModalWindow = () => {
   });
 
   useEffect(() => {
-    if (isOpen && inputRef.current) inputRef.current.focus();
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -44,8 +67,8 @@ const ModalWindow = () => {
       dispatch(closeModal());
       const response = await removeChannelMutation(extra.channelId);
       if (response.data.id === currentChannelId) dispatch(setCurrentChannelId(defaultChannelId));
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -59,14 +82,14 @@ const ModalWindow = () => {
             onChange={formik.handleChange}
             value={formik.values.inputValue}
             name="inputValue"
-            className={`mb-2 ${cn({ 'is-invalid': error })}`}
+            className={`mb-2 ${cn({ 'is-invalid': formik.errors.inputValue })}`}
             type="text"
           />
-          <Form.Label className="visually-hidden">Имя канала</Form.Label>
-          <div className="invalid-feedback">{error}</div>
+          <Form.Label column="sm" className="visually-hidden">Имя канала</Form.Label>
+          <div className="invalid-feedback">{formik.errors.inputValue}</div>
           <div className="d-flex justify-content-end">
             <Button onClick={() => dispatch(closeModal())} variant="secondary" className="me-2" type="button">Отменить</Button>
-            <Button variant="primary" type="submit">Отправить</Button>
+            <Button disabled={formik.isSubmitting} variant="primary" type="submit">Отправить</Button>
           </div>
         </Form.Group>
       </Form>

@@ -2,44 +2,18 @@ import {
   Nav, Button, ButtonGroup, DropdownButton, Dropdown,
 } from 'react-bootstrap';
 import cn from 'classnames';
-import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import io from 'socket.io-client';
 import { setCurrentChannelId, openModal } from '../redux/store/uiSlice.js';
-import { useGetChannelsQuery, channelsApi } from '../redux/store/channelsApi.js';
+import { useGetChannelsQuery } from '../redux/store/channelsApi.js';
 import ChatContainer from './ChatContainer.jsx';
-
-const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 // TODO добавить в редакс название актуального канала,
 //  чтобы использовать его в ChatContainer и в ModalWindow
 
 const MainPage = () => {
   const { data: channels = [] } = useGetChannelsQuery();
-  const { currentChannelId, defaultChannelId } = useSelector((state) => state.ui);
+  const { currentChannelId } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    const socket = io(`${apiUrl}`);
-    socket.on('newChannel', (payload) => {
-      dispatch(channelsApi.util.updateQueryData('getChannels', undefined, (draft) => [...draft, payload]));
-    });
-    socket.on('removeChannel', (payload) => {
-      if (payload.id === currentChannelId) dispatch(setCurrentChannelId(defaultChannelId));
-      dispatch(channelsApi.util.updateQueryData('getChannels', undefined, (draft) => draft.filter((item) => item.id !== payload.id)));
-    });
-    socket.on('renameChannel', (payload) => {
-      dispatch(channelsApi.util.updateQueryData('getChannels', undefined, (draft) => draft.map((item) => {
-        if (item.id === payload.id) return { ...payload };
-        return item;
-      })));
-    });
-    return () => {
-      socket.off('removeChannel');
-      socket.off('newChannel');
-      socket.off('renameChannel');
-    };
-  }, [currentChannelId, defaultChannelId, dispatch]);
 
   const channelBtnClass = (channel) => cn({ 'text-truncate': channel.removable });
 
@@ -49,7 +23,7 @@ const MainPage = () => {
         const btnElem = (
           <Button
             variant={channel.id === currentChannelId ? 'secondary' : 'light'}
-            onClick={() => dispatch(setCurrentChannelId(channel.id))}
+            onClick={() => dispatch(setCurrentChannelId({ id: channel.id, name: channel.name }))}
             type="button"
             className={`w-100 text-start btn ${channelBtnClass(channel)}`}
           >

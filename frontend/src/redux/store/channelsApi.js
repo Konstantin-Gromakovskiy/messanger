@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import io from 'socket.io-client';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -15,6 +16,26 @@ export const channelsApi = createApi({
             url: '',
             headers: { Authorization: `Bearer ${token}` },
           };
+        },
+        async onCacheEntryAdded(arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
+          const socket = io(`${apiUrl}`);
+          try {
+            await cacheDataLoaded;
+            socket.on('newChannel', (payload) => { updateCachedData((draft) => { draft.push(payload); }); });
+            socket.on('removeChannel', (payload) => {
+              updateCachedData((draft) => draft.filter((item) => item.id !== payload.id));
+            });
+            socket.on('renameChannel', (payload) => {
+              updateCachedData((draft) => draft
+                .map((item) => ((item.id === payload.id) ? { ...payload } : item)));
+            });
+          } catch (error) {
+            console.error('Socket connection error:', error);
+          }
+          await cacheEntryRemoved;
+          socket.off('newChannel');
+          socket.off('removeChannel');
+          socket.off('renameChannel');
         },
       }),
       addChannel: build.mutation({
@@ -53,9 +74,6 @@ export const channelsApi = createApi({
         },
       }),
     };
-  },
-  extraReducers: (builder) => {
-    builder.addCase();
   },
 });
 

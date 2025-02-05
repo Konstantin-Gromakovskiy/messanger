@@ -1,36 +1,25 @@
-import { io } from 'socket.io-client';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Form, InputGroup, Button } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
-import { useGetMessagesQuery, useAddMessageMutation, messagesApi } from '../redux/store/messagesApi.js';
+import { useState, useRef, useEffect } from 'react';
+import { useGetMessagesQuery, useAddMessageMutation } from '../redux/store/messagesApi.js';
 import '../styles/ChatContainer.css';
-
-const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 // TODO: причесать этот компонент, может быть лишняя логика
 
 const ChatContainer = () => {
-  const dispatch = useDispatch();
-  const activeChannelId = useSelector((state) => state.ui.currentChannelId);
+  const { currentChannelId, currentChannelName } = useSelector((state) => state.ui);
   const username = JSON.parse(localStorage.getItem('user'))?.username;
   const { data: messages = [] } = useGetMessagesQuery();
   const [addMessage, { isLoading }] = useAddMessageMutation();
   const [currentInput, setCurrentInput] = useState('');
 
-  useEffect(() => {
-    const socket = io(`${apiUrl}`);
-    socket.on('newMessage', (payload) => {
-      dispatch(messagesApi.util.updateQueryData('getMessages', undefined, (draft) => [...draft, payload]));
-    });
-    return () => {
-      socket.off('newMessage');
-    };
-  }, [dispatch]);
+  const inputRef = useRef();
+  useEffect(() => { inputRef.current.focus(); }, [currentChannelId]);
 
   const sendMessage = async (e) => {
     e.preventDefault();
     const body = currentInput;
-    const channelId = activeChannelId;
+    const channelId = currentChannelId;
     await addMessage({ body, channelId, username });
     setCurrentInput('');
   };
@@ -52,7 +41,7 @@ const ChatContainer = () => {
       <div className="d-flex flex-column h-100">
         <div className="bg-light mb-4 p-3 shadow-sm small">
           <p className="m-0">
-            <b>null</b>
+            <b>{`# ${currentChannelName}`}</b>
           </p>
           {messagesCountEl}
         </div>
@@ -61,6 +50,7 @@ const ChatContainer = () => {
           <Form onSubmit={sendMessage} noValidate className="">
             <InputGroup size="sm">
               <Form.Control
+                ref={inputRef}
                 onChange={(e) => setCurrentInput(e.target.value)}
                 value={currentInput}
                 type="text"
