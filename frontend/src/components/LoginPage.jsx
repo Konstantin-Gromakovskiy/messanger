@@ -4,7 +4,7 @@ import axios from 'axios';
 import {
   Card, Form, FloatingLabel, Button,
 } from 'react-bootstrap';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import loginAvatar from '../assets/login-avatar.jpg';
 
 const LoginPage = () => {
@@ -97,7 +97,11 @@ const LoginPage = () => {
                 Нет аккаунта?
                 {' '}
               </span>
-              <a href="/register">Регистрация</a>
+              <Link
+                to="/signup"
+              >
+                Регистрация
+              </Link>
             </Card.Footer>
           </Card>
         </div>

@@ -4,6 +4,7 @@ import Layout from './components/Layout.jsx';
 import NotFoundPage from './components/NotFoundPage.jsx';
 import LoginPage from './components/LoginPage.jsx';
 import MainPage from './components/MainPage.jsx';
+import SignupPage from './components/SignupPage.jsx';
 
 const App = () => (
   <Routes>
@@ -17,6 +18,7 @@ const App = () => (
           </RequireAuth>
         )}
       />
+      <Route path="signup" element={<SignupPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Route>
   </Routes>
