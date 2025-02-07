@@ -4,6 +4,7 @@ import {
   Card, Form, FloatingLabel, Button,
 } from 'react-bootstrap';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import cn from 'classnames';
 import loginAvatar from '../assets/login-avatar.jpg';
 import { useLoginMutation } from '../redux/store/userApi.js';
 
@@ -39,14 +40,8 @@ const LoginPage = () => {
   });
 
   useEffect(() => {
-    if (token) {
-      navigate(fromPage, { replace: true });
-    }
+    if (token) navigate(fromPage, { replace: true });
   }, [token, navigate, fromPage]);
-
-  const isInvalidClass = authFailed ? 'is-invalid' : '';
-  const authErrorElem = authFailed
-    && <div className="invalid-tooltip">Неверные имя пользователя или пароль</div>;
 
   return (
     <div className="container-fluid h-100">
@@ -62,7 +57,7 @@ const LoginPage = () => {
                 <FloatingLabel className="mb-3" label="Ваш ник">
                   <Form.Control
                     required
-                    className={`form-control ${isInvalidClass}`}
+                    className={`form-control ${cn({ 'is-invalid': authFailed })}`}
                     autoComplete="username"
                     type="text"
                     name="username"
@@ -77,7 +72,7 @@ const LoginPage = () => {
                 <FloatingLabel className="mb-4" label="Пароль">
                   <Form.Control
                     required
-                    className={`form-control ${isInvalidClass}`}
+                    className={`form-control ${cn({ 'is-invalid': authFailed })}`}
                     autoComplete="current-password"
                     type="password"
                     name="password"
@@ -88,7 +83,7 @@ const LoginPage = () => {
                       formik.handleChange(e);
                     }}
                   />
-                  {authErrorElem}
+                  {authFailed && <div className="invalid-tooltip">Неверные имя пользователя или пароль</div>}
                 </FloatingLabel>
                 <Button
                   type="submit"
@@ -100,15 +95,8 @@ const LoginPage = () => {
               </Form>
             </Card.Body>
             <Card.Footer className="text-center py-4">
-              <span>
-                Нет аккаунта?
-                {' '}
-              </span>
-              <Link
-                to="/signup"
-              >
-                Регистрация
-              </Link>
+              <span>{'Нет аккаунта? '}</span>
+              <Link to="/signup">Регистрация</Link>
             </Card.Footer>
           </Card>
         </div>

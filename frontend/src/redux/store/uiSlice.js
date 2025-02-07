@@ -17,14 +17,14 @@ const currentChannelIdSlice = createSlice({
     },
   },
   reducers: {
-    setCurrentChannelId(state, action) {
-      state.currentChannelId = action.payload.id;
-      state.currentChannelName = action.payload.name;
+    setCurrentChannelId(state, { payload: { id, name } }) {
+      state.currentChannelId = id;
+      state.currentChannelName = name;
     },
-    openModal(state, action) {
-      if (action.payload.channelName) state.modal.extra.channelName = action.payload.channelName;
-      if (action.payload.channelId) state.modal.extra.channelId = action.payload.channelId;
-      state.modal.type = action.payload.type;
+    openModal(state, { payload: { type, channelId, channelName } }) {
+      if (channelName) state.modal.extra.channelName = channelName;
+      if (channelId) state.modal.extra.channelId = channelId;
+      state.modal.type = type;
       state.modal.isOpen = true;
     },
     closeModal(state) {

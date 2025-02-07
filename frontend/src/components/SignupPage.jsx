@@ -3,7 +3,9 @@ import {
 } from 'react-bootstrap';
 import { useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
+import cn from 'classnames';
 import signupAvatar from '../assets/signup-avatar.jpg';
 import { useCreateUserMutation } from '../redux/store/userApi.js';
 
@@ -11,11 +13,15 @@ const SignupPage = () => {
   const inputNameRef = useRef();
   const [createUser] = useCreateUserMutation();
   const navigate = useNavigate();
-  const location = useLocation();
-  const fromPage = location.state?.from?.pathname || '/';
   useEffect(() => {
     inputNameRef.current.focus();
   }, []);
+
+  const validationSchema = yup.object({
+    username: yup.string().min(3).max(20).required(),
+    password: yup.string().min(6).required(),
+    confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Пароли должны совпадать').required(),
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -23,11 +29,14 @@ const SignupPage = () => {
       password: '',
       confirmPassword: '',
     },
+    validateOnBlur: false,
+    validationSchema,
     onSubmit: async (values) => {
       try {
         await createUser({ username: values.username, password: values.password }).unwrap();
-        navigate(fromPage, { replace: true });
+        navigate('/', { replace: true });
       } catch (error) {
+        if (error.status === 409) formik.setErrors({ username: 'User exist' });
         console.log(error);
       }
     },
@@ -56,7 +65,10 @@ const SignupPage = () => {
                       autoComplete="username"
                       value={formik.values.username}
                       onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      className={cn({ 'is-invalid': formik.errors.username && formik.touched.username })}
                     />
+                    <div className="invalid-tooltip">{formik.errors.username}</div>
                   </FloatingLabel>
                 </Form.Group>
                 <Form.Group className="mb-4">
@@ -70,7 +82,10 @@ const SignupPage = () => {
                       autoComplete="new-password"
                       value={formik.values.password}
                       onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      className={cn({ 'is-invalid': formik.errors.password && formik.touched.password })}
                     />
+                    <div className="invalid-tooltip">{formik.errors.password}</div>
                   </FloatingLabel>
                 </Form.Group>
                 <Form.Group className="mb-4">
@@ -83,11 +98,21 @@ const SignupPage = () => {
                       name="confirmPassword"
                       autoComplete="new-password"
                       value={formik.values.confirmPassword}
+                      className={cn({ 'is-invalid': formik.errors.confirmPassword && formik.touched.confirmPassword })}
                       onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                     />
+                    <div className="invalid-tooltip">{formik.errors.confirmPassword}</div>
                   </FloatingLabel>
                 </Form.Group>
-                <Button variant="outline-primary" type="submit" className="w-100 mb-3">Зарегестрироваться</Button>
+                <Button
+                  variant="outline-primary"
+                  disabled={formik.isSubmitting}
+                  type="submit"
+                  className="w-100 mb-3"
+                >
+                  Зарегистрироваться
+                </Button>
               </Form>
             </Card.Body>
           </Card>

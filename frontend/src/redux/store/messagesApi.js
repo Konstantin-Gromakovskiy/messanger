@@ -12,22 +12,17 @@ export const messagesApi = createApi({
         query: () => {
           const storedUser = localStorage.getItem('user');
           const token = JSON.parse(storedUser)?.token;
-          return {
-            url: '',
-            headers: { Authorization: `Bearer ${token}` },
-          };
+          return { url: '', headers: { Authorization: `Bearer ${token}` } };
         },
-        async onCacheEntryAdded(
-          arg,
-          { updateCachedData, cacheDataLoaded, cacheEntryRemoved },
-        ) {
+        async onCacheEntryAdded(arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
           const socket = io(`${apiUrl}`);
           try {
             await cacheDataLoaded;
             socket.on('newMessage', (payload) => {
-              updateCachedData((draft) => {
-                draft.push(payload);
-              });
+              updateCachedData((draft) => { draft.push(payload); });
+            });
+            socket.on('removeChannel', (payload) => {
+              updateCachedData((draft) => draft.filter((item) => item.channelId !== payload.id));
             });
           } catch (error) {
             console.error('Socket connection error:', error);
@@ -52,7 +47,4 @@ export const messagesApi = createApi({
   },
 });
 
-export const {
-  useGetMessagesQuery,
-  useAddMessageMutation,
-} = messagesApi;
+export const { useGetMessagesQuery, useAddMessageMutation } = messagesApi;

@@ -12,27 +12,22 @@ import {
 const ModalWindow = () => {
   const { data: channels = [] } = useGetChannelsQuery();
   const dispatch = useDispatch();
-  const { modal, currentChannelId, defaultChannelId } = useSelector((state) => state.ui);
-  const { isOpen, type, extra } = modal;
+  const {
+    currentChannelId,
+    defaultChannelId,
+    modal: { isOpen, type, extra },
+  } = useSelector((state) => state.ui);
   const [addChannelMutation] = useAddChannelMutation();
   const [removeChannelMutation] = useRemoveChannelMutation();
   const [renameChannelMutation] = useRenameChannelMutation();
   const inputRef = useRef();
-
-  yup.setLocale({
-    string: {
-      min: 'Минимум 3 символов',
-      max: 'Максимум 20 символов',
-      notOneOf: 'Такое имя уже используется',
-      required: 'Обязательное поле',
-    },
-  });
 
   const inputSchema = yup.object().shape({
     inputValue: yup.string().trim().min(3).max(20)
       .notOneOf(channels.map((channel) => channel.name), 'Такое имя уже используется')
       .required('Обязательное поле'),
   });
+
   const formik = useFormik({
     initialValues: {
       inputValue: '',
@@ -43,7 +38,7 @@ const ModalWindow = () => {
     onSubmit: async (values, { resetForm }) => {
       if (type === 'addChannel') {
         const response = await addChannelMutation(values.inputValue);
-        dispatch(setCurrentChannelId(response.data.id));
+        dispatch(setCurrentChannelId({ id: response.data.id, name: response.data.name }));
       } else {
         await renameChannelMutation({ id: extra.channelId, name: values.inputValue });
       }
@@ -72,6 +67,7 @@ const ModalWindow = () => {
     }
   };
 
+  // Компоненты модальных окон переименования и создания объеденены в один
   const manageChannel = {
     modalTitle: type === 'addChannel' ? 'Добавить канал' : 'Редактировать канал',
     modalBody: (

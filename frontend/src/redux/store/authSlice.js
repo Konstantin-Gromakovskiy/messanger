@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 
 const authSlice = createSlice({
@@ -6,7 +7,9 @@ const authSlice = createSlice({
     username: null,
   },
   reducers: {
-    addCurrentUser: (state, action) => ({ ...state, username: action.payload }),
+    addCurrentUser: (state, action) => {
+      state.username = action.payload;
+    },
   },
 });
 

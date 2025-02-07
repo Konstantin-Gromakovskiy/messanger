@@ -4,30 +4,31 @@ import { useState, useRef, useEffect } from 'react';
 import { useGetMessagesQuery, useAddMessageMutation } from '../redux/store/messagesApi.js';
 import '../styles/ChatContainer.css';
 
-// TODO: причесать этот компонент, может быть лишняя логика
-
 const ChatContainer = () => {
-  const { currentChannelId, currentChannelName } = useSelector((state) => state.ui);
+  const {
+    currentChannelId,
+    currentChannelName,
+    modal: { isOpen },
+  } = useSelector((state) => state.ui);
   const username = JSON.parse(localStorage.getItem('user'))?.username;
   const { data: messages = [] } = useGetMessagesQuery();
   const [addMessage, { isLoading }] = useAddMessageMutation();
   const [currentInput, setCurrentInput] = useState('');
 
   const inputRef = useRef();
-  useEffect(() => { inputRef.current.focus(); }, [currentChannelId]);
+  useEffect(() => { inputRef.current.focus(); }, [isOpen]);
 
   const sendMessage = async (e) => {
     e.preventDefault();
-    const body = currentInput;
-    const channelId = currentChannelId;
-    await addMessage({ body, channelId, username });
+    await addMessage({ body: currentInput, channelId: currentChannelId, username });
     setCurrentInput('');
   };
 
-  const messagesCountEl = messages && <span className="text-muted">{`${messages.length} сообщений`}</span>;
+  const currentMessages = messages.filter((message) => message.channelId === currentChannelId);
+
   const messagesList = (
     <div className="overflow-auto px-5">
-      {messages.map((message) => (
+      {currentMessages.map((message) => (
         <div key={message.id} className="text-break mb-2">
           <b>{message.username}</b>
           {`: ${message.body}`}
@@ -43,7 +44,7 @@ const ChatContainer = () => {
           <p className="m-0">
             <b>{`# ${currentChannelName}`}</b>
           </p>
-          {messagesCountEl}
+          <span className="text-muted">{`${currentMessages.length} сообщений`}</span>
         </div>
         {messagesList}
         <div className="mt-auto px-5 py-3">
