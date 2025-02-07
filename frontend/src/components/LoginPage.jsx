@@ -1,15 +1,16 @@
 import { useFormik } from 'formik';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import {
   Card, Form, FloatingLabel, Button,
 } from 'react-bootstrap';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import loginAvatar from '../assets/login-avatar.jpg';
+import { useLoginMutation } from '../redux/store/userApi.js';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [login] = useLoginMutation();
   const [authFailed, setAuthFailed] = useState(false);
   const fromPage = location.state?.from?.pathname || '/';
   const storedUser = localStorage.getItem('user');
@@ -21,14 +22,14 @@ const LoginPage = () => {
       password: '',
     },
     onSubmit: async (values) => {
-      setAuthFailed(null);
+      setAuthFailed(false);
       try {
         const { username } = values;
-        const response = await axios.post('/api/v1/login', { ...values });
-        const { token: requestToken } = response.data;
+        const response = await login(values).unwrap();
+        const requestToken = response.token;
         localStorage.setItem('user', JSON.stringify({ token: requestToken, username }));
       } catch (error) {
-        if (error.isAxiosError && error.response.status === 401) {
+        if (error.data.error === 'Unauthorized') {
           setAuthFailed(true);
           return;
         }
@@ -67,7 +68,10 @@ const LoginPage = () => {
                     name="username"
                     placeholder="Ваш ник"
                     value={formik.values.username}
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                      setAuthFailed(false);
+                      formik.handleChange(e);
+                    }}
                   />
                 </FloatingLabel>
                 <FloatingLabel className="mb-4" label="Пароль">
@@ -79,7 +83,10 @@ const LoginPage = () => {
                     name="password"
                     placeholder="Пароль"
                     value={formik.values.password}
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                      setAuthFailed(false);
+                      formik.handleChange(e);
+                    }}
                   />
                   {authErrorElem}
                 </FloatingLabel>
