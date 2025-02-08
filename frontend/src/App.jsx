@@ -5,6 +5,7 @@ import NotFoundPage from './components/NotFoundPage.jsx';
 import LoginPage from './components/LoginPage.jsx';
 import MainPage from './components/MainPage.jsx';
 import SignupPage from './components/SignupPage.jsx';
+import './locale/i18next.js';
 
 const App = () => (
   <Routes>

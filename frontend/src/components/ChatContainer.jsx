@@ -3,6 +3,7 @@ import { Form, InputGroup, Button } from 'react-bootstrap';
 import { useState, useRef, useEffect } from 'react';
 import { useGetMessagesQuery, useAddMessageMutation } from '../redux/store/messagesApi.js';
 import '../styles/ChatContainer.css';
+import { useTranslation } from 'react-i18next';
 
 const ChatContainer = () => {
   const {
@@ -14,6 +15,7 @@ const ChatContainer = () => {
   const { data: messages = [] } = useGetMessagesQuery();
   const [addMessage, { isLoading }] = useAddMessageMutation();
   const [currentInput, setCurrentInput] = useState('');
+  const { t } = useTranslation();
 
   const inputRef = useRef();
   useEffect(() => { inputRef.current.focus(); }, [isOpen]);
@@ -44,7 +46,7 @@ const ChatContainer = () => {
           <p className="m-0">
             <b>{`# ${currentChannelName}`}</b>
           </p>
-          <span className="text-muted">{`${currentMessages.length} сообщений`}</span>
+          <span className="text-muted">{t('chatContainer.messages.count', { count: currentMessages.length })}</span>
         </div>
         {messagesList}
         <div className="mt-auto px-5 py-3">
@@ -55,9 +57,9 @@ const ChatContainer = () => {
                 onChange={(e) => setCurrentInput(e.target.value)}
                 value={currentInput}
                 type="text"
-                placeholder="Введите ссобщение..."
+                placeholder={t('chatContainer.inputPlaceholder')}
                 name="body"
-                aria-label="Новое сообщение "
+                aria-label={t('chatContainer.inputLabel')}
               />
               <InputGroup.Text>
                 <Button
@@ -72,7 +74,7 @@ const ChatContainer = () => {
                       d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"
                     />
                   </svg>
-                  <span className="visually-hidden">Отправить</span>
+                  <span className="visually-hidden">{t('buttons.submit')}</span>
                 </Button>
               </InputGroup.Text>
             </InputGroup>

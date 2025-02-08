@@ -6,6 +6,7 @@ import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import cn from 'classnames';
+import { useTranslation } from 'react-i18next';
 import signupAvatar from '../assets/signup-avatar.jpg';
 import { useCreateUserMutation } from '../redux/store/userApi.js';
 
@@ -16,11 +17,12 @@ const SignupPage = () => {
   useEffect(() => {
     inputNameRef.current.focus();
   }, []);
+  const { t } = useTranslation();
 
   const validationSchema = yup.object({
-    username: yup.string().min(3).max(20).required(),
-    password: yup.string().min(6).required(),
-    confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Пароли должны совпадать').required(),
+    username: yup.string().min(3, t('errors.min3max20')).max(20, t('errors.min3max20')).required(t('errors.required')),
+    password: yup.string().min(6, t('errors.min3max20')).required(t('errors.required')),
+    confirmPassword: yup.string().oneOf([yup.ref('password'), null], t('errors.oneOf')).required(),
   });
 
   const formik = useFormik({
@@ -49,13 +51,13 @@ const SignupPage = () => {
           <Card className="shadow-sm">
             <Card.Body className="d-flex flex-column p-5 flex-md-row justify-content-around align-items-center">
               <div>
-                <img src={signupAvatar} alt="Регистрация" className="rounded-circle" />
+                <img src={signupAvatar} alt={t('signupPage.title')} className="rounded-circle" />
               </div>
               <Form onSubmit={formik.handleSubmit} className="w-50">
-                <h1 className="text-center mb-4">Регистрация</h1>
+                <h1 className="text-center mb-4">{t('signupPage.title')}</h1>
                 <Form.Group className="mb-4">
-                  <Form.Label htmlFor="username" column="sm" className="visually-hidden">Имя пользователя</Form.Label>
-                  <FloatingLabel label="Имя пользователя">
+                  <Form.Label htmlFor="username" column="sm" className="visually-hidden">{t('signupPage.username')}</Form.Label>
+                  <FloatingLabel label={t('signupPage.username')}>
                     <Form.Control
                       ref={inputNameRef}
                       required
@@ -72,14 +74,14 @@ const SignupPage = () => {
                   </FloatingLabel>
                 </Form.Group>
                 <Form.Group className="mb-4">
-                  <Form.Label htmlFor="password" column="sm" className="visually-hidden">Пароль</Form.Label>
-                  <FloatingLabel label="Пароль">
+                  <Form.Label htmlFor="password" column="sm" className="visually-hidden">{t('signupPage.password')}</Form.Label>
+                  <FloatingLabel label={t('signupPage.password')}>
                     <Form.Control
                       required
                       type="password"
-                      placeholder="Не менее 6 символов"
                       name="password"
                       autoComplete="new-password"
+                      placeholder={t('signupPage.password')}
                       value={formik.values.password}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -89,13 +91,19 @@ const SignupPage = () => {
                   </FloatingLabel>
                 </Form.Group>
                 <Form.Group className="mb-4">
-                  <Form.Label htmlFor="confirmPassword" column="sm" className="visually-hidden">Подтвердите пароль</Form.Label>
-                  <FloatingLabel label="Подтвердите пароль">
+                  <Form.Label
+                    htmlFor="confirmPassword"
+                    column="sm"
+                    className="visually-hidden"
+                  >
+                    {t('signupPage.confirmPassword')}
+                  </Form.Label>
+                  <FloatingLabel label={t('signupPage.confirmPassword')}>
                     <Form.Control
                       required
                       type="password"
-                      placeholder="пароли должны совпадать"
                       name="confirmPassword"
+                      placeholder={t('signupPage.confirmPassword')}
                       autoComplete="new-password"
                       value={formik.values.confirmPassword}
                       className={cn({ 'is-invalid': formik.errors.confirmPassword && formik.touched.confirmPassword })}
@@ -111,7 +119,7 @@ const SignupPage = () => {
                   type="submit"
                   className="w-100 mb-3"
                 >
-                  Зарегистрироваться
+                  {t('buttons.signup')}
                 </Button>
               </Form>
             </Card.Body>

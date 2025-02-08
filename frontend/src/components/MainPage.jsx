@@ -3,6 +3,7 @@ import {
 } from 'react-bootstrap';
 import cn from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { setCurrentChannelId, openModal } from '../redux/store/uiSlice.js';
 import { useGetChannelsQuery } from '../redux/store/channelsApi.js';
 import ChatContainer from './ChatContainer.jsx';
@@ -10,8 +11,9 @@ import ModalWindow from './ModalWindow.jsx';
 
 const MainPage = () => {
   const { data: channels = [] } = useGetChannelsQuery();
-  const { currentChannelId } = useSelector((state) => state.ui);
+  const { currentChannelId, modal: { isOpen } } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const truncateClass = (channel) => cn({ 'text-truncate': channel.removable });
 
@@ -43,7 +45,7 @@ const MainPage = () => {
                     onClick={() => dispatch(openModal({ type: 'removeChannel', channelId: channel.id }))}
                     className="btn btn-secondary"
                   >
-                    Удалить
+                    {t('mainPage.remove')}
                   </Dropdown.Item>
                   <Dropdown.Item
                     onClick={() => dispatch(openModal({
@@ -53,7 +55,7 @@ const MainPage = () => {
                     }))}
                     className="btn btn-secondary"
                   >
-                    Переименовать
+                    {t('mainPage.rename')}
                   </Dropdown.Item>
                 </DropdownButton>
               </ButtonGroup>
@@ -70,7 +72,7 @@ const MainPage = () => {
         <div className="row h-100 bg-white flex-md-row">
           <div className="col-4 col-md-2 border-end px-0 bg-light flex-column h-100 d-flex">
             <div className="d-flex mt-1 justify-content-between mb-2 ps-4 pe-2 p-4">
-              <b>Каналы</b>
+              <b>{t('mainPage.channels')}</b>
               <Button
                 onClick={() => dispatch(openModal({ type: 'addChannel' }))}
                 variant="outline-primary"
@@ -94,7 +96,7 @@ const MainPage = () => {
           <ChatContainer />
         </div>
       </div>
-      <ModalWindow />
+      {isOpen && <ModalWindow />}
     </>
   );
 };
