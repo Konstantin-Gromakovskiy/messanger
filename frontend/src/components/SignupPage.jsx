@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import cn from 'classnames';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import signupAvatar from '../assets/signup-avatar.jpg';
 import { useCreateUserMutation } from '../redux/store/userApi.js';
 
@@ -39,7 +40,7 @@ const SignupPage = () => {
         navigate('/', { replace: true });
       } catch (error) {
         if (error.status === 409) formik.setErrors({ username: 'User exist' });
-        console.log(error);
+        toast(t('toast.networkError', { type: 'error' }));
       }
     },
   });

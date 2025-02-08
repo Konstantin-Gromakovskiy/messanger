@@ -6,6 +6,7 @@ import {
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import cn from 'classnames';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import loginAvatar from '../assets/login-avatar.jpg';
 import { useLoginMutation } from '../redux/store/userApi.js';
 
@@ -32,11 +33,11 @@ const LoginPage = () => {
         const requestToken = response.token;
         localStorage.setItem('user', JSON.stringify({ token: requestToken, username }));
       } catch (error) {
-        if (error.data.error === 'Unauthorized') {
+        if (error?.data?.error === 'Unauthorized') {
           setAuthFailed(true);
           return;
         }
-        console.log(error);
+        toast(t('toast.networkError'), { type: 'error' });
       }
     },
   });

@@ -1,9 +1,10 @@
 import { useSelector } from 'react-redux';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import { useGetMessagesQuery, useAddMessageMutation } from '../redux/store/messagesApi.js';
 import '../styles/ChatContainer.css';
-import { useTranslation } from 'react-i18next';
 
 const ChatContainer = () => {
   const {
@@ -22,8 +23,12 @@ const ChatContainer = () => {
 
   const sendMessage = async (e) => {
     e.preventDefault();
-    await addMessage({ body: currentInput, channelId: currentChannelId, username });
-    setCurrentInput('');
+    try {
+      await addMessage({ body: currentInput, channelId: currentChannelId, username }).unwrap();
+      setCurrentInput('');
+    } catch (error) {
+      toast(t('toast.networkError'));
+    }
   };
 
   const currentMessages = messages.filter((message) => message.channelId === currentChannelId);

@@ -97,6 +97,7 @@ const MainPage = () => {
         </div>
       </div>
       {isOpen && <ModalWindow />}
+      <ModalWindow />
     </>
   );
 };

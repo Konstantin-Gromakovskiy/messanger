@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react';
 import cn from 'classnames';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import { closeModal, setCurrentChannelId } from '../redux/store/uiSlice.js';
 import {
   useAddChannelMutation, useRemoveChannelMutation, useRenameChannelMutation, useGetChannelsQuery,
@@ -38,14 +39,20 @@ const ModalWindow = () => {
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
-      if (type === 'addChannel') {
-        const { data: { id, name } } = await addChannelMutation(values.inputValue);
-        dispatch(setCurrentChannelId({ id, name }));
-      } else {
-        await renameChannelMutation({ id: extra.channelId, name: values.inputValue });
+      try {
+        if (type === 'addChannel') {
+          const { data: { id, name } } = await addChannelMutation(values.inputValue).unwrap();
+          dispatch(setCurrentChannelId({ id, name }));
+          toast(t('toast.channelAdded'), { type: 'success' });
+        } else {
+          await renameChannelMutation({ id: extra.channelId, name: values.inputValue }).unwrap();
+          toast(t('toast.channelRenamed'), { type: 'success' });
+        }
+        resetForm();
+        dispatch(closeModal());
+      } catch (error) {
+        toast(t('toast.networkError'), { type: 'error' });
       }
-      resetForm();
-      dispatch(closeModal());
     },
   });
 
@@ -64,12 +71,14 @@ const ModalWindow = () => {
       dispatch(closeModal());
       const response = await removeChannelMutation(extra.channelId);
       if (response.data.id === currentChannelId) dispatch(setCurrentChannelId(defaultChannelId));
-    } catch (err) {
-      console.log(err);
+      toast(t('toast.ChannelRemoved'), { type: 'success' });
+    } catch (error) {
+      toast(t('toast.networkError'), { type: 'error' });
     }
   };
 
   const CancelSubmitBtns = (
+
     <div className="d-flex justify-content-end">
       <Button onClick={() => dispatch(closeModal())} variant="secondary" className="me-2" type="button">
         {t('buttons.cancel')}
@@ -84,7 +93,6 @@ const ModalWindow = () => {
       </Button>
     </div>
   );
-  console.log(formik.errors.inputValue);
 
   return (
     <Modal centered show={isOpen} onHide={() => dispatch(closeModal())}>

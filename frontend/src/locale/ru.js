@@ -6,6 +6,12 @@ const translation = {
     authFailed: 'Неверные имя пользователя или пароль',
     oneOf: 'Пароли должны совпадать',
   },
+  toast: {
+    channelAdded: 'Канал создан',
+    channelRemoved: 'Канал удален',
+    channelRenamed: 'Канал переименован',
+    networkError: 'Ошибка соединения',
+  },
   buttons: {
     exit: 'Выйти',
     login: 'Войти',
