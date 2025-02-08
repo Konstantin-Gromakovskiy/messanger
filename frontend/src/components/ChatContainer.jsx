@@ -1,10 +1,11 @@
-import { useSelector } from 'react-redux';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import { useGetMessagesQuery, useAddMessageMutation } from '../redux/store/messagesApi.js';
 import '../styles/ChatContainer.css';
+import filter from 'leo-profanity';
+import { useSelector } from 'react-redux';
+import { useGetMessagesQuery, useAddMessageMutation } from '../redux/store/messagesApi.js';
 
 const ChatContainer = () => {
   const {
@@ -17,6 +18,7 @@ const ChatContainer = () => {
   const [addMessage, { isLoading }] = useAddMessageMutation();
   const [currentInput, setCurrentInput] = useState('');
   const { t } = useTranslation();
+  filter.loadDictionary('ru');
 
   const inputRef = useRef();
   useEffect(() => { inputRef.current.focus(); }, [isOpen]);
@@ -24,7 +26,8 @@ const ChatContainer = () => {
   const sendMessage = async (e) => {
     e.preventDefault();
     try {
-      await addMessage({ body: currentInput, channelId: currentChannelId, username }).unwrap();
+      const message = filter.clean(currentInput);
+      await addMessage({ body: message, channelId: currentChannelId, username }).unwrap();
       setCurrentInput('');
     } catch (error) {
       toast(t('toast.networkError'));

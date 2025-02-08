@@ -41,7 +41,7 @@ const ModalWindow = () => {
     onSubmit: async (values, { resetForm }) => {
       try {
         if (type === 'addChannel') {
-          const { data: { id, name } } = await addChannelMutation(values.inputValue).unwrap();
+          const { id, name } = await addChannelMutation(values.inputValue).unwrap();
           dispatch(setCurrentChannelId({ id, name }));
           toast(t('toast.channelAdded'), { type: 'success' });
         } else {
@@ -51,6 +51,7 @@ const ModalWindow = () => {
         resetForm();
         dispatch(closeModal());
       } catch (error) {
+        console.log(error);
         toast(t('toast.networkError'), { type: 'error' });
       }
     },
