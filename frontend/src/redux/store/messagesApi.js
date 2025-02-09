@@ -1,11 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import io from 'socket.io-client';
 
-const apiUrl = import.meta.env.VITE_API_BASE_URL;
+const apiUrl = new URL(import.meta.env.VITE_API_BASE_URL);
+const messageUrl = `${apiUrl}api/v1/messages`;
+const socket = io(`${apiUrl}`);
 
 export const messagesApi = createApi({
   reducerPath: 'messagesApi',
-  baseQuery: fetchBaseQuery({ baseUrl: `${apiUrl}/api/v1/messages` }),
+  baseQuery: fetchBaseQuery({ baseUrl: messageUrl }),
   endpoints(build) {
     return {
       getMessages: build.query({
@@ -15,7 +17,6 @@ export const messagesApi = createApi({
           return { url: '', headers: { Authorization: `Bearer ${token}` } };
         },
         async onCacheEntryAdded(arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
-          const socket = io(`${apiUrl}`);
           try {
             await cacheDataLoaded;
             socket.on('newMessage', (payload) => {

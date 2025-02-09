@@ -3,9 +3,12 @@ import io from 'socket.io-client';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
+console.log(apiUrl);
+const socket = io(`${apiUrl}`);
+
 export const channelsApi = createApi({
   reducerPath: 'channelsApi',
-  baseQuery: fetchBaseQuery({ baseUrl: `${apiUrl}/api/v1/channels` }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${apiUrl}api/v1/channels` }),
   endpoints(build) {
     return {
       getChannels: build.query({
@@ -18,7 +21,6 @@ export const channelsApi = createApi({
           };
         },
         async onCacheEntryAdded(arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
-          const socket = io(`${apiUrl}`);
           try {
             await cacheDataLoaded;
             socket.on('newChannel', (payload) => { updateCachedData((draft) => { draft.push(payload); }); });
