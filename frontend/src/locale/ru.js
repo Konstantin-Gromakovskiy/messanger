@@ -12,6 +12,7 @@ const translation = {
     channelRemoved: 'Канал удален',
     channelRenamed: 'Канал переименован',
     networkError: 'Ошибка соединения',
+    serverError: 'Сервер не отвечает',
   },
   buttons: {
     exit: 'Выйти',

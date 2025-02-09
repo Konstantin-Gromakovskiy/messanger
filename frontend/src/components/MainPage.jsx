@@ -4,16 +4,36 @@ import {
 import cn from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+import { useEffect, useRef } from 'react';
 import { setCurrentChannelId, openModal } from '../redux/store/uiSlice.js';
 import { useGetChannelsQuery } from '../redux/store/channelsApi.js';
 import ChatContainer from './ChatContainer.jsx';
 import ModalWindow from './ModalWindow.jsx';
 
 const MainPage = () => {
-  const { data: channels = [] } = useGetChannelsQuery();
+  const { data: channels = [], error: getChannelsError } = useGetChannelsQuery();
   const { currentChannelId, modal: { isOpen } } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const prevErrorRef = useRef(null);
+
+  useEffect(() => {
+    if (getChannelsError && getChannelsError !== prevErrorRef.current) {
+      prevErrorRef.current = getChannelsError;
+
+      switch (getChannelsError.status) {
+        case 401:
+          localStorage.removeItem('user');
+          break;
+        case 500:
+          toast.error(t('toast.serverError'));
+          break;
+        default:
+          console.log(getChannelsError);
+      }
+    }
+  }, [getChannelsError]);
 
   const truncateClass = (channel) => cn({ 'text-truncate': channel.removable });
 

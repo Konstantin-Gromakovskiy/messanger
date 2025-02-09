@@ -3,7 +3,6 @@ import io from 'socket.io-client';
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
-console.log(apiUrl);
 const socket = io(`${apiUrl}`);
 
 export const channelsApi = createApi({

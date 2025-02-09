@@ -30,7 +30,15 @@ const ChatContainer = () => {
       await addMessage({ body: message, channelId: currentChannelId, username }).unwrap();
       setCurrentInput('');
     } catch (error) {
-      toast(t('toast.networkError'));
+      if (error.status === 401) {
+        toast(t('toast.unauthorized'), { type: 'error' });
+        return;
+      }
+      if (error.status === 500) {
+        toast(t('toast.serverError'), { type: 'error' });
+        return;
+      }
+      toast(t('toast.networkError'), { type: 'error' });
     }
   };
 

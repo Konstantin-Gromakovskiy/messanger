@@ -7,12 +7,15 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import cn from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
 import loginAvatar from '../assets/login-avatar.jpg';
 import { useLoginMutation } from '../redux/store/userApi.js';
+import { addToken } from '../redux/store/authSlice.js';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const [login] = useLoginMutation();
   const [authFailed, setAuthFailed] = useState(false);
   const fromPage = location.state?.from?.pathname || '/';
@@ -32,6 +35,7 @@ const LoginPage = () => {
         const response = await login(values).unwrap();
         const requestToken = response.token;
         localStorage.setItem('user', JSON.stringify({ token: requestToken, username }));
+        dispatch(addToken({ token: requestToken }));
       } catch (error) {
         if (error?.data?.error === 'Unauthorized') {
           setAuthFailed(true);
