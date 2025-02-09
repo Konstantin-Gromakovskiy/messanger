@@ -11,6 +11,8 @@ build:
 #Старт сервера
 start-backend:
 	npm run start
+start:
+	make start-backend
 
 develop:
 	npm run develop
