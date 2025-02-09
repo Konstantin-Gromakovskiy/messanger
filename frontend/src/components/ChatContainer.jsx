@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import '../styles/ChatContainer.css';
 import filter from 'leo-profanity';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { useGetMessagesQuery, useAddMessageMutation } from '../redux/store/messagesApi.js';
 
 const ChatContainer = () => {
@@ -18,6 +19,7 @@ const ChatContainer = () => {
   const [addMessage, { isLoading }] = useAddMessageMutation();
   const [currentInput, setCurrentInput] = useState('');
   const { t } = useTranslation();
+  const navigate = useNavigate();
   filter.loadDictionary('ru');
 
   const inputRef = useRef();
@@ -30,15 +32,17 @@ const ChatContainer = () => {
       await addMessage({ body: message, channelId: currentChannelId, username }).unwrap();
       setCurrentInput('');
     } catch (error) {
-      if (error.status === 401) {
-        toast(t('toast.unauthorized'), { type: 'error' });
-        return;
+      switch (error.status) {
+        case 401:
+          localStorage.removeItem('user');
+          navigate('/login');
+          break;
+        case 500:
+          toast.error(t('toast.serverError'));
+          break;
+        default:
+          console.log(error);
       }
-      if (error.status === 500) {
-        toast(t('toast.serverError'), { type: 'error' });
-        return;
-      }
-      toast(t('toast.networkError'), { type: 'error' });
     }
   };
 

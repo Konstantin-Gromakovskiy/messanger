@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { setCurrentChannelId, openModal } from '../redux/store/uiSlice.js';
 import { useGetChannelsQuery } from '../redux/store/channelsApi.js';
 import ChatContainer from './ChatContainer.jsx';
@@ -17,6 +18,7 @@ const MainPage = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const prevErrorRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (getChannelsError && getChannelsError !== prevErrorRef.current) {
@@ -25,6 +27,7 @@ const MainPage = () => {
       switch (getChannelsError.status) {
         case 401:
           localStorage.removeItem('user');
+          navigate('/login');
           break;
         case 500:
           toast.error(t('toast.serverError'));
@@ -33,7 +36,7 @@ const MainPage = () => {
           console.log(getChannelsError);
       }
     }
-  }, [getChannelsError]);
+  }, [getChannelsError, navigate, t]);
 
   const truncateClass = (channel) => cn({ 'text-truncate': channel.removable });
 
