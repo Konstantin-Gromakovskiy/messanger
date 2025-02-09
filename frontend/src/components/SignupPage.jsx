@@ -23,7 +23,7 @@ const SignupPage = () => {
   const validationSchema = yup.object({
     username: yup.string().min(3, t('errors.min3max20')).max(20, t('errors.min3max20')).required(t('errors.required')),
     password: yup.string().min(6, t('errors.min3max20')).required(t('errors.required')),
-    confirmPassword: yup.string().oneOf([yup.ref('password'), null], t('errors.oneOf')).required(),
+    confirmPassword: yup.string().oneOf([yup.ref('password'), null], t('errors.oneOf')).required(t('errors.required')),
   });
 
   const formik = useFormik({
@@ -39,7 +39,7 @@ const SignupPage = () => {
         await createUser({ username: values.username, password: values.password }).unwrap();
         navigate('/', { replace: true });
       } catch (error) {
-        if (error.status === 409) formik.setErrors({ username: t('errors.userExist') });
+        if (error.status === 409) formik.setErrors({ username: t('errors.userExists') });
         else toast(t('toast.networkError', { type: 'error' }));
       }
     },
