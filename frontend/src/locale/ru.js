@@ -5,6 +5,7 @@ const translation = {
     notUnique: 'Такое имя уже используется',
     authFailed: 'Неверные имя пользователя или пароль',
     oneOf: 'Пароли должны совпадать',
+    userExists: 'Пользователь уже существует',
   },
   toast: {
     channelAdded: 'Канал создан',

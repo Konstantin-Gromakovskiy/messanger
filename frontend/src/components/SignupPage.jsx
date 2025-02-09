@@ -39,8 +39,8 @@ const SignupPage = () => {
         await createUser({ username: values.username, password: values.password }).unwrap();
         navigate('/', { replace: true });
       } catch (error) {
-        if (error.status === 409) formik.setErrors({ username: 'User exist' });
-        toast(t('toast.networkError', { type: 'error' }));
+        if (error.status === 409) formik.setErrors({ username: t('errors.userExist') });
+        else toast(t('toast.networkError', { type: 'error' }));
       }
     },
   });
