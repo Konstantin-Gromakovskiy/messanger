@@ -17,6 +17,7 @@ const ModalWindow = () => {
   const {
     currentChannelId,
     defaultChannelId,
+    defaultChannelName,
     modal: { isOpen, type, extra },
   } = useSelector((state) => state.ui);
   const [addChannelMutation] = useAddChannelMutation();
@@ -71,8 +72,8 @@ const ModalWindow = () => {
     try {
       dispatch(closeModal());
       const response = await removeChannelMutation(extra.channelId);
-      if (response.data.id === currentChannelId) dispatch(setCurrentChannelId(defaultChannelId));
-      toast(t('toast.ChannelRemoved'), { type: 'success' });
+      if (response.data.id === currentChannelId) dispatch(setCurrentChannelId({ id: defaultChannelId, name: defaultChannelName }));
+      toast(t('toast.channelRemoved'), { type: 'success' });
     } catch (error) {
       toast(t('toast.networkError'), { type: 'error' });
     }
