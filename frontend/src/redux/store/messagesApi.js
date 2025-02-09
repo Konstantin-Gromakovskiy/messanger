@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import io from 'socket.io-client';
 
-const apiUrl = new URL(import.meta.env.VITE_API_BASE_URL);
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 const messageUrl = `${apiUrl}api/v1/messages`;
 const socket = io(`${apiUrl}`);
 
