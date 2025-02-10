@@ -4,7 +4,7 @@
 
 # [Chat (Slack)](https://frontend-project-okdl.onrender.com/login) # 
 
-About real-time application for messaging between users
+The real-time application for messaging between users
 
 ### Key Features
 
