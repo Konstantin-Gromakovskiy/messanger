@@ -27,13 +27,21 @@ The real-time application for messaging between users
     ```
 2. Install dependencies with `npm install`
     ```bash
-    npm install
+    make install
     ```
-3. Start the development server with `npm start`
+3. add '.env' directory to the root of the project with the following variables:
     ```bash
-    npm start
+    VITE_API_BASE_URL=http://0.0.0.0:5001/
     ```
-4. Open http://localhost:5173/ your browser
+4. build the project with `npm run build`
+    ```bash
+    make build
+    ```
+5. Start the development server with `npm start`
+    ```bash
+    make start
+    ```
+6. Open http://0.0.0.0:5001/login your browser
 
 
 
