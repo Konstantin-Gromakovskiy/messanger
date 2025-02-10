@@ -2,7 +2,7 @@
 
 [![Actions Status](https://github.com/Konstantin-Gromakovskiy/frontend-project-12/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Konstantin-Gromakovskiy/frontend-project-12/actions)
 
-# [Hexlet Slack](https://frontend-project-okdl.onrender.com/login) # 
+# [Chat (Slack)](https://frontend-project-okdl.onrender.com/login) # 
 
 This project demonstrates the use of WebSockets, React, and Redux to build a real-time chat application.
 
