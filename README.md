@@ -4,7 +4,7 @@
 
 # [Chat (Slack)](https://frontend-project-okdl.onrender.com/login) # 
 
-This project demonstrates the use of WebSockets, React, and Redux to build a real-time chat application.
+About real-time application for messaging between users
 
 ### Key Features
 
