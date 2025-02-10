@@ -6,20 +6,20 @@
 
 The real-time application for messaging between users
 
-### Key Features
+## Key Features
 
 * Real-time chat with multiple users
 * User registration and authentication
 * Adding, deleting, and renaming channels
 * Message sending with profanity filtering
 
-### Technologies Used
+## Technologies Used
 
 * **React**: A JavaScript library for building user interfaces
 * **Redux**: A predictable state container for JavaScript apps
 * **WebSockets**: Real-time communication between the client and server
 
-#### Installation
+## Installation
 
 1. Clone the repository
     ```bash
