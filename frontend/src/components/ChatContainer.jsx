@@ -7,6 +7,7 @@ import filter from 'leo-profanity';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useGetMessagesQuery, useAddMessageMutation } from '../redux/store/messagesApi.js';
+import routes from '../utils/routes.js';
 
 const ChatContainer = () => {
   const {
@@ -35,7 +36,7 @@ const ChatContainer = () => {
       switch (error.status) {
         case 401:
           localStorage.removeItem('user');
-          navigate('/login');
+          navigate(routes.loginPagePath);
           break;
         case 500:
           toast.error(t('toast.serverError'));

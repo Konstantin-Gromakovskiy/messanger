@@ -2,6 +2,7 @@ import { Outlet } from 'react-router';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import routes from '../utils/routes.js';
 
 const Layout = () => {
   const user = localStorage.getItem('user');
@@ -9,7 +10,7 @@ const Layout = () => {
 
   const logOut = () => {
     localStorage.removeItem('user');
-    navigate('/login');
+    navigate(routes.loginPagePath);
   };
   const { t } = useTranslation();
 

@@ -11,6 +11,7 @@ import SignupPage from './components/SignupPage.jsx';
 import './locale/i18next.js';
 import store from './redux/store/index.js';
 import rollbarConfig from '../rollbar.config.js';
+import routes from './utils/routes.js';
 
 const App = () => (
   <RollbarProvider config={rollbarConfig}>
@@ -20,16 +21,16 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route element={<Layout />}>
-              <Route path="login" element={<LoginPage />} />
+              <Route path={routes.loginPagePath} element={<LoginPage />} />
               <Route
-                path="/"
+                path={routes.mainPagePath}
                 element={(
                   <RequireAuth>
                     <MainPage />
                   </RequireAuth>
                 )}
               />
-              <Route path="signup" element={<SignupPage />} />
+              <Route path={routes.signUpPagePath} element={<SignupPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Route>
           </Routes>

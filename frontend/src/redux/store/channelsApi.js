@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import io from 'socket.io-client';
-import routs from './routs.js';
+import routs from '../../utils/routes.js';
 
 const socket = io(routs.appUrl());
 
