@@ -1,10 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-const apiUrl = import.meta.env.VITE_API_BASE_URL;
+import routs from './routs.js';
 
 export const userApi = createApi({
   reducerPath: 'userApi',
-  baseQuery: fetchBaseQuery({ baseUrl: `${apiUrl}api/v1` }),
+  baseQuery: fetchBaseQuery({ baseUrl: routs.serverUrl() }),
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (user) => ({
@@ -13,6 +12,7 @@ export const userApi = createApi({
         body: user,
       }),
     }),
+
     createUser: builder.mutation({
       query: (user) => ({
         url: '/signup',

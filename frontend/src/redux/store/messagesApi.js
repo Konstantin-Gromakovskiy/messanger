@@ -1,13 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import io from 'socket.io-client';
+import routs from './routs.js';
 
-const apiUrl = import.meta.env.VITE_API_BASE_URL;
-const messageUrl = `${apiUrl}api/v1/messages`;
-const socket = io(`${apiUrl}`);
+const socket = io(routs.appUrl());
 
 export const messagesApi = createApi({
   reducerPath: 'messagesApi',
-  baseQuery: fetchBaseQuery({ baseUrl: messageUrl }),
+  baseQuery: fetchBaseQuery({ baseUrl: routs.messagesUrl() }),
   endpoints(build) {
     return {
       getMessages: build.query({
