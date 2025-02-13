@@ -8,7 +8,7 @@ export default {
   messagesUrl: () => joinPath(serverPath, 'messages'),
   channelsUrl: () => joinPath(serverPath, 'channels'),
   serverUrl: () => joinPath(serverPath),
-  appUrl: mainPagePath,
+  appUrl: () => mainPagePath,
   mainPagePath,
   loginPagePath,
   signUpPagePath,
