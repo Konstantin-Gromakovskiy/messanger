@@ -11,7 +11,7 @@ import { setCurrentChannelId, openModal } from '../redux/store/uiSlice.js';
 import { useGetChannelsQuery } from '../redux/store/channelsApi.js';
 import ChatContainer from './ChatContainer.jsx';
 import ModalWindow from './ModalWindow.jsx';
-import routes from '../utils/routes.js';
+import routes from '../routes.js';
 
 const MainPage = () => {
   const { data: channels = [], error: getChannelsError } = useGetChannelsQuery();
@@ -28,7 +28,7 @@ const MainPage = () => {
       switch (getChannelsError.status) {
         case 401:
           localStorage.removeItem('user');
-          navigate(routes.loginPagePath);
+          navigate(routes.loginPagePath());
           break;
         case 500:
           toast.error(t('toast.serverError'));

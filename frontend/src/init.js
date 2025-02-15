@@ -1,0 +1,36 @@
+import filter from 'leo-profanity';
+import io from 'socket.io-client';
+import startI18n from './locale/i18next.js';
+import routes from './routes.js';
+import store from './redux/store/index.js';
+import { channelsApi } from './redux/store/channelsApi.js';
+import { messagesApi } from './redux/store/messagesApi.js';
+
+const init = async () => {
+  filter.loadDictionary('ru');
+  await startI18n();
+
+  const socket = io(routes.appUrl());
+
+  socket.on('newChannel', (payload) => {
+    store.dispatch(channelsApi.util.updateQueryData('getChannels', undefined, (draft) => [...draft, payload]));
+  });
+
+  socket.on('renameChannel', (payload) => {
+    store.dispatch(channelsApi.util.updateQueryData('getChannels', undefined, (draft) => draft
+      .map((item) => ((item.id === payload.id) ? { ...payload } : item))));
+  });
+
+  socket.on('removeChannel', (payload) => {
+    store.dispatch(channelsApi.util.updateQueryData('getChannels', undefined, (draft) => draft
+      .filter((item) => item.id !== payload.id)));
+    store.dispatch(messagesApi.util.updateQueryData('getMessages', undefined, (draft) => draft
+      .filter((item) => item.channelId !== payload.id)));
+  });
+
+  socket.on('newMessage', (payload) => {
+    store.dispatch(messagesApi.util.updateQueryData('getMessages', undefined, (draft) => [...draft, payload]));
+  });
+};
+
+export default init;

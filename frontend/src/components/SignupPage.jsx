@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import signupAvatar from '../assets/signup-avatar.jpg';
 import { useCreateUserMutation } from '../redux/store/userApi.js';
-import routes from '../utils/routes.js';
+import routes from '../routes.js';
 
 const SignupPage = () => {
   const inputNameRef = useRef();
@@ -38,7 +38,7 @@ const SignupPage = () => {
     onSubmit: async (values) => {
       try {
         await createUser({ username: values.username, password: values.password }).unwrap();
-        navigate(routes.mainPagePath, { replace: true });
+        navigate(routes.mainPagePath(), { replace: true });
       } catch (error) {
         if (error.status === 409) formik.setErrors({ username: t('errors.userExists') });
         else toast(t('toast.networkError', { type: 'error' }));

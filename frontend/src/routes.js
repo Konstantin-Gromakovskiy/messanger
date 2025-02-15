@@ -9,7 +9,7 @@ export default {
   channelsUrl: () => joinPath(serverPath, 'channels'),
   serverUrl: () => joinPath(serverPath),
   appUrl: () => mainPagePath,
-  mainPagePath,
-  loginPagePath,
-  signUpPagePath,
+  mainPagePath: () => mainPagePath,
+  loginPagePath: () => loginPagePath,
+  signUpPagePath: () => signUpPagePath,
 };

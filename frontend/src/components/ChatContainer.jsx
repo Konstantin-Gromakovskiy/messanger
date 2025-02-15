@@ -7,7 +7,7 @@ import filter from 'leo-profanity';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useGetMessagesQuery, useAddMessageMutation } from '../redux/store/messagesApi.js';
-import routes from '../utils/routes.js';
+import routes from '../routes.js';
 
 const ChatContainer = () => {
   const {
@@ -21,7 +21,6 @@ const ChatContainer = () => {
   const [currentInput, setCurrentInput] = useState('');
   const { t } = useTranslation();
   const navigate = useNavigate();
-  filter.loadDictionary('ru');
 
   const inputRef = useRef();
   useEffect(() => { inputRef.current.focus(); }, [isOpen]);
@@ -36,7 +35,7 @@ const ChatContainer = () => {
       switch (error.status) {
         case 401:
           localStorage.removeItem('user');
-          navigate(routes.loginPagePath);
+          navigate(routes.loginPagePath());
           break;
         case 500:
           toast.error(t('toast.serverError'));
