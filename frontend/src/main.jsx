@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App.jsx';
 import init from './init.js';
 
-await init();
+init();
 createRoot(document.getElementById('root')).render(
   <App />,
 );
