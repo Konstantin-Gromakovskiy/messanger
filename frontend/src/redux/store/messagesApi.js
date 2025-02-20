@@ -3,27 +3,25 @@ import routs from '../../routes.js';
 
 export const messagesApi = createApi({
   reducerPath: 'messagesApi',
-  baseQuery: fetchBaseQuery({ baseUrl: routs.messagesUrl() }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: routs.messagesUrl(),
+    prepareHeaders: (headers) => {
+      const storedUser = localStorage.getItem('user');
+      const token = JSON.parse(storedUser)?.token;
+      headers.set('Authorization', `Bearer ${token}`);
+    },
+  }),
   endpoints(build) {
     return {
       getMessages: build.query({
-        query: () => {
-          const storedUser = localStorage.getItem('user');
-          const token = JSON.parse(storedUser)?.token;
-          return { url: '', headers: { Authorization: `Bearer ${token}` } };
-        },
+        query: () => ({ url: '' }),
       }),
       addMessage: build.mutation({
-        query: (body) => {
-          const storedUser = localStorage.getItem('user');
-          const token = JSON.parse(storedUser)?.token;
-          return {
-            url: '',
-            method: 'POST',
-            headers: { Authorization: `Bearer ${token}` },
-            body,
-          };
-        },
+        query: (body) => ({
+          url: '',
+          method: 'POST',
+          body,
+        }),
       }),
     };
   },

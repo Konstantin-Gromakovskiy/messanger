@@ -5,7 +5,7 @@ import { userApi } from './userApi.js';
 import ui from './uiSlice.js';
 import authSlice from './authSlice.js';
 
-const store = configureStore({
+const createStore = () => configureStore({
   reducer: {
     ui,
     auth: authSlice,
@@ -19,4 +19,4 @@ const store = configureStore({
     .concat(userApi.middleware),
 });
 
-export default store;
+export default createStore;

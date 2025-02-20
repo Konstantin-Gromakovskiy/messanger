@@ -3,53 +3,38 @@ import routs from '../../routes.js';
 
 export const channelsApi = createApi({
   reducerPath: 'channelsApi',
-  baseQuery: fetchBaseQuery({ baseUrl: routs.channelsUrl() }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: routs.channelsUrl(),
+    prepareHeaders: (headers) => {
+      const storedUser = localStorage.getItem('user');
+      const token = JSON.parse(storedUser)?.token;
+      headers.set('Authorization', `Bearer ${token}`);
+    },
+  }),
   endpoints(build) {
     return {
       getChannels: build.query({
-        query: () => {
-          const storedUser = localStorage.getItem('user');
-          const token = JSON.parse(storedUser)?.token;
-          return {
-            url: '',
-            headers: { Authorization: `Bearer ${token}` },
-          };
-        },
+        query: () => ({ url: '' }),
       }),
       addChannel: build.mutation({
-        query: (name) => {
-          const storedUser = localStorage.getItem('user');
-          const token = JSON.parse(storedUser)?.token;
-          return {
-            url: '',
-            method: 'POST',
-            headers: { Authorization: `Bearer ${token}` },
-            body: { name },
-          };
-        },
+        query: (name) => ({
+          url: '',
+          method: 'POST',
+          body: { name },
+        }),
       }),
       removeChannel: build.mutation({
-        query: (id) => {
-          const storedUser = localStorage.getItem('user');
-          const token = JSON.parse(storedUser)?.token;
-          return {
-            url: `/${id}`,
-            method: 'DELETE',
-            headers: { Authorization: `Bearer ${token}` },
-          };
-        },
+        query: (id) => ({
+          url: `/${id}`,
+          method: 'DELETE',
+        }),
       }),
       renameChannel: build.mutation({
-        query: ({ id, name }) => {
-          const storedUser = localStorage.getItem('user');
-          const token = JSON.parse(storedUser)?.token;
-          return {
-            url: `/${id}`,
-            method: 'PATCH',
-            headers: { Authorization: `Bearer ${token}` },
-            body: { name },
-          };
-        },
+        query: ({ id, name }) => ({
+          url: `/${id}`,
+          method: 'PATCH',
+          body: { name },
+        }),
       }),
     };
   },

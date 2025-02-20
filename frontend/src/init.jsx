@@ -2,13 +2,15 @@ import filter from 'leo-profanity';
 import io from 'socket.io-client';
 import startI18n from './locale/i18next.js';
 import routes from './routes.js';
-import store from './redux/store/index.js';
+import createStore from './redux/store/index.js';
 import { channelsApi } from './redux/store/channelsApi.js';
 import { messagesApi } from './redux/store/messagesApi.js';
+import App from './App.jsx';
 
 const init = async () => {
   filter.loadDictionary('ru');
   await startI18n();
+  const store = createStore();
 
   const socket = io(routes.appUrl());
 
@@ -31,6 +33,8 @@ const init = async () => {
   socket.on('newMessage', (payload) => {
     store.dispatch(messagesApi.util.updateQueryData('getMessages', undefined, (draft) => [...draft, payload]));
   });
+
+  return (<App store={store} />);
 };
 
 export default init;

@@ -9,11 +9,10 @@ import LoginPage from './components/LoginPage.jsx';
 import MainPage from './components/MainPage.jsx';
 import SignupPage from './components/SignupPage.jsx';
 import './locale/i18next.js';
-import store from './redux/store/index.js';
 import rollbarConfig from '../rollbar.config.js';
 import routes from './routes.js';
 
-const App = () => (
+const App = ({ store }) => (
   <RollbarProvider config={rollbarConfig}>
     <ErrorBoundary>
       <Provider store={store}>
@@ -39,5 +38,4 @@ const App = () => (
     </ErrorBoundary>
   </RollbarProvider>
 );
-
 export default App;

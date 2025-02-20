@@ -1,9 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import App from './App.jsx';
-import init from './init.js';
+import init from './init.jsx';
 
-init();
-createRoot(document.getElementById('root')).render(
-  <App />,
-);
+const vdom = await init();
+createRoot(document.getElementById('root')).render(vdom);
