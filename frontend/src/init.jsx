@@ -5,14 +5,20 @@ import routes from './routes.js';
 import createStore from './redux/store/index.js';
 import { channelsApi } from './redux/store/channelsApi.js';
 import { messagesApi } from './redux/store/messagesApi.js';
+import { login } from './redux/store/authSlice.js';
 import App from './App.jsx';
 
 const init = async () => {
   filter.loadDictionary('ru');
   await startI18n();
   const store = createStore();
-
   const socket = io(routes.appUrl());
+
+  const userData = JSON.parse(localStorage.getItem('user'));
+
+  if (userData) {
+    store.dispatch(login({ token: userData.token, username: userData.username }));
+  }
 
   socket.on('newChannel', (payload) => {
     store.dispatch(channelsApi.util.updateQueryData('getChannels', undefined, (draft) => [...draft, payload]));

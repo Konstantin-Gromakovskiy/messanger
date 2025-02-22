@@ -2,7 +2,6 @@ import { Form, InputGroup, Button } from 'react-bootstrap';
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import '../styles/ChatContainer.css';
 import filter from 'leo-profanity';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';

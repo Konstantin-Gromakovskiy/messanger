@@ -11,7 +11,7 @@ import { setCurrentChannelId, openModal } from '../redux/store/uiSlice.js';
 import { useGetChannelsQuery } from '../redux/store/channelsApi.js';
 import ChatContainer from './ChatContainer.jsx';
 import ModalWindow from './ModalWindow.jsx';
-import routes from '../routes.js';
+import useAuth from '../hook/useAuth.js';
 
 const MainPage = () => {
   const { data: channels = [], error: getChannelsError } = useGetChannelsQuery();
@@ -20,6 +20,7 @@ const MainPage = () => {
   const { t } = useTranslation();
   const prevErrorRef = useRef(null);
   const navigate = useNavigate();
+  const { signOut } = useAuth();
 
   useEffect(() => {
     if (getChannelsError && getChannelsError !== prevErrorRef.current) {
@@ -27,8 +28,7 @@ const MainPage = () => {
 
       switch (getChannelsError.status) {
         case 401:
-          localStorage.removeItem('user');
-          navigate(routes.loginPagePath());
+          signOut();
           break;
         case 500:
           toast.error(t('toast.serverError'));
@@ -37,7 +37,7 @@ const MainPage = () => {
           console.log(getChannelsError);
       }
     }
-  }, [getChannelsError, navigate, t]);
+  }, [getChannelsError, navigate, t, signOut]);
 
   const truncateClass = (channel) => cn({ 'text-truncate': channel.removable });
 
