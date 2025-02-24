@@ -7,21 +7,20 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import cn from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import loginAvatar from '../assets/login-avatar.jpg';
 import { useLoginMutation } from '../redux/store/userApi.js';
-import { login } from '../redux/store/authSlice.js';
+import useAuth from '../hook/useAuth.js';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
   const [loginRequest] = useLoginMutation();
   const [authFailed, setAuthFailed] = useState(false);
   const fromPage = location.state?.from?.pathname || '/';
-  const storedUser = localStorage.getItem('user');
-  const token = JSON.parse(storedUser)?.token;
+  const { token } = useSelector((state) => state.auth);
   const { t } = useTranslation();
+  const { logIn } = useAuth();
 
   const formik = useFormik({
     initialValues: {
@@ -33,9 +32,8 @@ const LoginPage = () => {
       try {
         const { username } = values;
         const response = await loginRequest(values).unwrap();
-        const requestToken = response.token;
-        localStorage.setItem('user', JSON.stringify({ token: requestToken, username }));
-        dispatch(login({ token: requestToken, username }));
+        const responseToken = response.token;
+        logIn(username, responseToken);
       } catch (error) {
         if (error?.data?.error === 'Unauthorized') {
           setAuthFailed(true);

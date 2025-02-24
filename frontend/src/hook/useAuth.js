@@ -1,21 +1,21 @@
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { logout, login } from '../redux/store/authSlice.js';
+import { logout as logoutSlice, login as loginSlice } from '../redux/store/authSlice.js';
 import routes from '../routes.js';
 
 const useAuth = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const signOut = () => {
+  const logOut = () => {
     localStorage.removeItem('user');
-    dispatch(logout());
+    dispatch(logoutSlice());
     navigate(routes.loginPagePath());
   };
-  const signIn = (user, token) => {
-    localStorage.setItem('user', JSON.stringify({ token, username: user.username }));
-    dispatch(login({ token, username: user.username }));
+  const logIn = (username, token) => {
+    localStorage.setItem('user', JSON.stringify({ token, username }));
+    dispatch(loginSlice({ token, username }));
   };
-  return { signIn, signOut };
+  return { logIn, logOut };
 };
 
 export default useAuth;

@@ -101,7 +101,7 @@ const MainPage = () => {
                 onClick={() => dispatch(openModal({ type: 'addChannel' }))}
                 variant="outline-primary"
                 type="button"
-                className="btn btn-group-vertical p-0 text-primary"
+                className="btn btn-group-vertical p-0"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

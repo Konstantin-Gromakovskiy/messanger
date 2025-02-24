@@ -2,11 +2,12 @@ import { Outlet } from 'react-router';
 import { Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import useAuth from '../hook/useAuth.js';
 
 const Layout = () => {
-  const user = localStorage.getItem('user');
-  const { signOut } = useAuth();
+  const { username } = useSelector((state) => state.auth);
+  const { logOut } = useAuth();
   const { t } = useTranslation();
 
   return (
@@ -14,7 +15,7 @@ const Layout = () => {
       <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
         <div className="container">
           <Link className="navbar-brand" to="/">Hexlet Chat</Link>
-          {user && <Button onClick={signOut} as={Link} to="/login" variant="primary">{t('buttons.exit')}</Button>}
+          {username && <Button onClick={logOut} as={Link} to="/login" variant="primary">{t('buttons.exit')}</Button>}
         </div>
       </nav>
       <Outlet />

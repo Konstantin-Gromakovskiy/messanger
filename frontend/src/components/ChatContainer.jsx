@@ -4,9 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import filter from 'leo-profanity';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { useGetMessagesQuery, useAddMessageMutation } from '../redux/store/messagesApi.js';
-import routes from '../routes.js';
+import useAuth from '../hook/useAuth.js';
 
 const ChatContainer = () => {
   const {
@@ -14,12 +13,12 @@ const ChatContainer = () => {
     currentChannelName,
     modal: { isOpen },
   } = useSelector((state) => state.ui);
-  const username = JSON.parse(localStorage.getItem('user'))?.username;
+  const { username } = useSelector((state) => state.auth);
   const { data: messages = [] } = useGetMessagesQuery();
   const [addMessage, { isLoading }] = useAddMessageMutation();
   const [currentInput, setCurrentInput] = useState('');
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { logOut } = useAuth();
 
   const inputRef = useRef();
   useEffect(() => { inputRef.current.focus(); }, [isOpen]);
@@ -33,8 +32,7 @@ const ChatContainer = () => {
     } catch (error) {
       switch (error.status) {
         case 401:
-          localStorage.removeItem('user');
-          navigate(routes.loginPagePath());
+          logOut();
           break;
         case 500:
           toast.error(t('toast.serverError'));
