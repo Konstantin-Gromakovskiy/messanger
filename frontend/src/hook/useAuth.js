@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout as logoutSlice, login as loginSlice } from '../redux/store/authSlice.js';
 import routes from '../routes.js';
 
@@ -15,7 +15,10 @@ const useAuth = () => {
     localStorage.setItem('user', JSON.stringify({ token, username }));
     dispatch(loginSlice({ token, username }));
   };
-  return { logIn, logOut };
+  const { username, token } = useSelector((state) => state.auth);
+  return {
+    logIn, logOut, username, token,
+  };
 };
 
 export default useAuth;

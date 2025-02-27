@@ -2,7 +2,7 @@ import { ToastContainer } from 'react-toastify';
 import { Route, Routes, BrowserRouter } from 'react-router';
 import { Provider } from 'react-redux';
 import { Provider as RollbarProvider, ErrorBoundary } from '@rollbar/react';
-import RequireAuth from './hoc/RequireAuth.jsx';
+import RequireAuth from './components/RequireAuth.jsx';
 import Layout from './components/Layout.jsx';
 import NotFoundPage from './components/NotFoundPage.jsx';
 import LoginPage from './components/LoginPage.jsx';

@@ -13,12 +13,11 @@ const ChatContainer = () => {
     currentChannelName,
     modal: { isOpen },
   } = useSelector((state) => state.ui);
-  const { username } = useSelector((state) => state.auth);
   const { data: messages = [] } = useGetMessagesQuery();
   const [addMessage, { isLoading }] = useAddMessageMutation();
   const [currentInput, setCurrentInput] = useState('');
   const { t } = useTranslation();
-  const { logOut } = useAuth();
+  const { logOut, username } = useAuth();
 
   const inputRef = useRef();
   useEffect(() => { inputRef.current.focus(); }, [isOpen]);

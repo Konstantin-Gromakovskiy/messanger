@@ -2,12 +2,10 @@ import { Outlet } from 'react-router';
 import { Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import useAuth from '../hook/useAuth.js';
 
 const Layout = () => {
-  const { username } = useSelector((state) => state.auth);
-  const { logOut } = useAuth();
+  const { logOut, username } = useAuth();
   const { t } = useTranslation();
 
   return (
