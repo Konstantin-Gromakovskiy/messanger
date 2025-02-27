@@ -8,13 +8,12 @@ import * as yup from 'yup';
 import cn from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 import signupAvatar from '../assets/signup-avatar.jpg';
-import { useCreateUserMutation } from '../redux/store/userApi.js';
 import routes from '../routes.js';
 
 const SignupPage = () => {
   const inputNameRef = useRef();
-  const [createUser] = useCreateUserMutation();
   const navigate = useNavigate();
   useEffect(() => {
     inputNameRef.current.focus();
@@ -37,7 +36,10 @@ const SignupPage = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        await createUser({ username: values.username, password: values.password }).unwrap();
+        await axios.post(
+          routes.createUserUrl(),
+          { username: values.username, password: values.password },
+        );
         navigate(routes.mainPagePath(), { replace: true });
       } catch (error) {
         if (error.status === 409) formik.setErrors({ username: t('errors.userExists') });

@@ -13,6 +13,7 @@ const translation = {
     channelRenamed: 'Канал переименован',
     networkError: 'Ошибка соединения',
     serverError: 'Сервер не отвечает',
+    unknownError: 'Уупс... что-то пошло не так',
   },
   buttons: {
     exit: 'Выйти',

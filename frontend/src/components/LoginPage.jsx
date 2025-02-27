@@ -7,20 +7,18 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import cn from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import { useSelector } from 'react-redux';
+import axios from 'axios';
 import loginAvatar from '../assets/login-avatar.jpg';
-import { useLoginMutation } from '../redux/store/userApi.js';
 import useAuth from '../hook/useAuth.js';
+import routes from '../routes.js';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [loginRequest] = useLoginMutation();
   const [authFailed, setAuthFailed] = useState(false);
   const fromPage = location.state?.from?.pathname || '/';
-  const { token } = useSelector((state) => state.auth);
   const { t } = useTranslation();
-  const { logIn } = useAuth();
+  const { logIn, token } = useAuth();
 
   const formik = useFormik({
     initialValues: {
@@ -31,11 +29,12 @@ const LoginPage = () => {
       setAuthFailed(false);
       try {
         const { username } = values;
-        const response = await loginRequest(values).unwrap();
-        const responseToken = response.token;
+        const response = await axios.post(routes.loginUrl(), values);
+        const responseToken = response.data.token;
         logIn(username, responseToken);
       } catch (error) {
-        if (error?.data?.error === 'Unauthorized') {
+        console.log(error);
+        if (error.status === 401) {
           setAuthFailed(true);
           return;
         }

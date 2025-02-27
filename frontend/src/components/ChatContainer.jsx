@@ -37,6 +37,7 @@ const ChatContainer = () => {
           toast.error(t('toast.serverError'));
           break;
         default:
+          toast.error(t('toast.unknownError'));
           console.log(error);
       }
     }
