@@ -1,10 +1,9 @@
-import { Outlet } from 'react-router';
 import { Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import useAuth from '../hook/useAuth.js';
 
-const Layout = () => {
+const Layout = ({ children }) => {
   const { logOut, username } = useAuth();
   const { t } = useTranslation();
 
@@ -16,7 +15,7 @@ const Layout = () => {
           {username && <Button onClick={logOut} as={Link} to="/login" variant="primary">{t('buttons.exit')}</Button>}
         </div>
       </nav>
-      <Outlet />
+      {children}
     </div>
   );
 };

@@ -42,8 +42,15 @@ const SignupPage = () => {
         );
         navigate(routes.mainPagePath(), { replace: true });
       } catch (error) {
-        if (error.status === 409) formik.setErrors({ username: t('errors.userExists') });
-        else toast(t('toast.networkError', { type: 'error' }));
+        if (!error.isAxiosError) {
+          toast(t('toast.unknownError'), { type: 'error' });
+          return;
+        }
+        if (error.status === 409) {
+          formik.setErrors({ username: t('errors.userExists') });
+          return;
+        }
+        toast(t('toast.networkError', { type: 'error' }));
       }
     },
   });

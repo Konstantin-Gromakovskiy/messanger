@@ -33,7 +33,10 @@ const LoginPage = () => {
         const responseToken = response.data.token;
         logIn(username, responseToken);
       } catch (error) {
-        console.log(error);
+        if (!error.isAxiosError) {
+          toast(t('toast.networkError'), { type: 'error' });
+          return;
+        }
         if (error.status === 401) {
           setAuthFailed(true);
           return;

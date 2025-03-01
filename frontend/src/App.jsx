@@ -1,5 +1,7 @@
 import { ToastContainer } from 'react-toastify';
-import { Route, Routes, BrowserRouter } from 'react-router';
+import {
+  Route, Routes, BrowserRouter, Outlet,
+} from 'react-router';
 import { Provider } from 'react-redux';
 import { Provider as RollbarProvider, ErrorBoundary } from '@rollbar/react';
 import RequireAuth from './components/RequireAuth.jsx';
@@ -19,7 +21,7 @@ const App = ({ store }) => (
         <ToastContainer hideProgressBar />
         <BrowserRouter>
           <Routes>
-            <Route element={<Layout />}>
+            <Route element={<Layout><Outlet /></Layout>}>
               <Route path={routes.loginPagePath()} element={<LoginPage />} />
               <Route
                 path={routes.mainPagePath()}
