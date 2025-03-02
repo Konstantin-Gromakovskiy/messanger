@@ -11,10 +11,12 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import signupAvatar from '../assets/signup-avatar.jpg';
 import routes from '../routes.js';
+import useAuth from '../hook/useAuth.js';
 
 const SignupPage = () => {
   const inputNameRef = useRef();
   const navigate = useNavigate();
+  const { logIn } = useAuth();
   useEffect(() => {
     inputNameRef.current.focus();
   }, []);
@@ -36,10 +38,12 @@ const SignupPage = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        await axios.post(
+        const response = await axios.post(
           routes.createUserUrl(),
           { username: values.username, password: values.password },
         );
+        const { username, token } = response.data;
+        logIn(username, token);
         navigate(routes.mainPagePath(), { replace: true });
       } catch (error) {
         if (!error.isAxiosError) {

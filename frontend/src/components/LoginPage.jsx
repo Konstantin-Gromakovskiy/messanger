@@ -1,5 +1,5 @@
 import { useFormik } from 'formik';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Card, Form, FloatingLabel, Button,
 } from 'react-bootstrap';
@@ -18,7 +18,7 @@ const LoginPage = () => {
   const [authFailed, setAuthFailed] = useState(false);
   const fromPage = location.state?.from?.pathname || '/';
   const { t } = useTranslation();
-  const { logIn, token } = useAuth();
+  const { logIn } = useAuth();
 
   const formik = useFormik({
     initialValues: {
@@ -28,13 +28,14 @@ const LoginPage = () => {
     onSubmit: async (values) => {
       setAuthFailed(false);
       try {
-        const { username } = values;
         const response = await axios.post(routes.loginUrl(), values);
         const responseToken = response.data.token;
+        const { username } = response.data;
         logIn(username, responseToken);
+        navigate(fromPage, { replace: true });
       } catch (error) {
         if (!error.isAxiosError) {
-          toast(t('toast.networkError'), { type: 'error' });
+          toast(t('toast.unknownError'), { type: 'error' });
           return;
         }
         if (error.status === 401) {
@@ -45,10 +46,6 @@ const LoginPage = () => {
       }
     },
   });
-
-  useEffect(() => {
-    if (token) navigate(fromPage, { replace: true });
-  }, [token, navigate, fromPage]);
 
   return (
     <div className="container-fluid h-100">
