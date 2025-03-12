@@ -33,8 +33,8 @@ const AddingModalWindow = () => {
     validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
       try {
-        const { id, name } = await addChannel(values.inputValue).unwrap();
-        dispatch(setCurrentChannelId({ id, name }));
+        const { id } = await addChannel(values.inputValue).unwrap();
+        dispatch(setCurrentChannelId({ id }));
         toast(t('toast.channelAdded'), { type: 'success' });
         resetForm();
         dispatch(closeModal());
@@ -87,7 +87,6 @@ const RemovingModalWindow = () => {
   const {
     currentChannelId,
     defaultChannelId,
-    defaultChannelName,
     modal: { isOpen, extra },
   } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
@@ -99,7 +98,7 @@ const RemovingModalWindow = () => {
       dispatch(closeModal());
       const response = await removeChannel(extra.channelId);
       if (response.data.id === currentChannelId) {
-        dispatch(setCurrentChannelId({ id: defaultChannelId, name: defaultChannelName }));
+        dispatch(setCurrentChannelId({ id: defaultChannelId }));
       }
       toast(t('toast.channelRemoved'), { type: 'success' });
     } catch (error) {
@@ -205,7 +204,8 @@ const RenamingModalWindow = () => {
 };
 
 const ModalWindow = () => {
-  const { type } = useSelector((state) => state.ui.modal);
+  const { type, isOpen } = useSelector((state) => state.ui.modal);
+  if (!isOpen) return null;
   const mapping = {
     addChannel: <AddingModalWindow />,
     renameChannel: <RenamingModalWindow />,

@@ -77,7 +77,7 @@ const SignupPage = () => {
                       ref={inputNameRef}
                       required
                       type="text"
-                      placeholder="От 3 до 20 символов"
+                      placeholder={t('errors.min3max20')}
                       name="username"
                       autoComplete="username"
                       value={formik.values.username}

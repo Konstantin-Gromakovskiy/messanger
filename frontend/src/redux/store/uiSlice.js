@@ -5,7 +5,6 @@ const currentChannelIdSlice = createSlice({
   name: 'ui',
   initialState: {
     currentChannelId: '1',
-    currentChannelName: 'general',
     defaultChannelId: '1',
     defaultChannelName: 'general',
     modal: {
@@ -18,9 +17,8 @@ const currentChannelIdSlice = createSlice({
     },
   },
   reducers: {
-    setCurrentChannelId(state, { payload: { id, name } }) {
+    setCurrentChannelId(state, { payload: { id } }) {
       state.currentChannelId = id;
-      state.currentChannelName = name;
     },
     openModal(state, { payload: { type, channelId, channelName } }) {
       if (channelName) state.modal.extra.channelName = channelName;

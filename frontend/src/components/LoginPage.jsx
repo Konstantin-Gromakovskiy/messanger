@@ -16,7 +16,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [authFailed, setAuthFailed] = useState(false);
-  const fromPage = location.state?.from?.pathname || '/';
+  const fromPage = location.state?.from?.pathname || routes.mainPagePath();
   const { t } = useTranslation();
   const { logIn } = useAuth();
 
