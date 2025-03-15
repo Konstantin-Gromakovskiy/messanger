@@ -45,7 +45,7 @@ const ChannelsList = () => {
             type="button"
             className={`w-100 text-start btn ${truncateClass(channel)}`}
           >
-            <span className="me-1"># </span>
+            <span className="me-1">#</span>
             {channel.name}
           </Button>
         );
