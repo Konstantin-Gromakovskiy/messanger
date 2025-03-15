@@ -39,17 +39,15 @@ const ChannelsList = () => {
     <Nav className="flex-column nav-pills nav-fill px-2 mb3 overflow-auto h-100 d-block">
       {channels.map((channel) => {
         const btnElem = (
-          <>
+          <Button
+            variant={channel.id === currentChannelId ? 'secondary' : 'light'}
+            onClick={() => dispatch(setCurrentChannelId({ id: channel.id }))}
+            type="button"
+            className={`w-100 text-start btn ${truncateClass(channel)}`}
+          >
             <span className="me-1">#</span>
-            <Button
-              variant={channel.id === currentChannelId ? 'secondary' : 'light'}
-              onClick={() => dispatch(setCurrentChannelId({ id: channel.id }))}
-              type="button"
-              className={`w-100 text-start btn ${truncateClass(channel)}`}
-            >
-              {channel.name}
-            </Button>
-          </>
+            {channel.name}
+          </Button>
         );
 
         return (
