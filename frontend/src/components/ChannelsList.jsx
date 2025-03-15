@@ -4,7 +4,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { openModal, setCurrentChannelId } from '../redux/store/uiSlice.js';
@@ -15,17 +15,14 @@ const ChannelsList = () => {
   const dispatch = useDispatch();
   const { currentChannelId } = useSelector((state) => state.ui);
   const truncateClass = (channel) => cn({ 'text-truncate': channel.removable });
-  const { data: channels = [], error: getChannelsError } = useGetChannelsQuery();
-  const prevErrorRef = useRef(null);
+  const { data: channels = [], error: channelsError } = useGetChannelsQuery();
   const navigate = useNavigate();
   const { signOut } = useAuth();
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (getChannelsError && getChannelsError !== prevErrorRef.current) {
-      prevErrorRef.current = getChannelsError;
-
-      switch (getChannelsError.status) {
+    if (channelsError) {
+      switch (channelsError.status) {
         case 401:
           signOut();
           break;
@@ -33,10 +30,10 @@ const ChannelsList = () => {
           toast.error(t('toast.serverError'));
           break;
         default:
-          console.log(getChannelsError);
+          console.log(channelsError);
       }
     }
-  }, [getChannelsError, navigate, t, signOut]);
+  }, [channelsError, navigate, t, signOut]);
 
   return (
     <Nav className="flex-column nav-pills nav-fill px-2 mb3 overflow-auto h-100 d-block">

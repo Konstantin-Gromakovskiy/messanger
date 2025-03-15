@@ -6,7 +6,6 @@ const currentChannelIdSlice = createSlice({
   initialState: {
     currentChannelId: '1',
     defaultChannelId: '1',
-    defaultChannelName: 'general',
     modal: {
       isOpen: false,
       type: null,
