@@ -71,7 +71,6 @@ const SignupPage = () => {
               <Form onSubmit={formik.handleSubmit} className="w-50">
                 <h1 className="text-center mb-4">{t('signupPage.title')}</h1>
                 <Form.Group className="mb-4">
-                  <Form.Label htmlFor="username" column="sm" className="visually-hidden">{t('signupPage.username')}</Form.Label>
                   <FloatingLabel label={t('signupPage.username')}>
                     <Form.Control
                       ref={inputNameRef}
@@ -89,7 +88,6 @@ const SignupPage = () => {
                   </FloatingLabel>
                 </Form.Group>
                 <Form.Group className="mb-4">
-                  <Form.Label htmlFor="password" column="sm" className="visually-hidden">{t('signupPage.password')}</Form.Label>
                   <FloatingLabel label={t('signupPage.password')}>
                     <Form.Control
                       required
