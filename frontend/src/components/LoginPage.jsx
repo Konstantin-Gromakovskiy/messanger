@@ -58,7 +58,7 @@ const LoginPage = () => {
               </div>
               <Form onSubmit={formik.handleSubmit} className="col-12 col-md-6 mt-3 mt-md-0">
                 <h1 className="text-center mb-4">{t('loginPage.title')}</h1>
-                <FloatingLabel className="mb-3" label={t('loginPage.username')}>
+                <FloatingLabel controlId="username" className="mb-3" label={t('loginPage.username')}>
                   <Form.Control
                     required
                     className={`form-control ${cn({ 'is-invalid': authFailed })}`}
@@ -73,7 +73,7 @@ const LoginPage = () => {
                     }}
                   />
                 </FloatingLabel>
-                <FloatingLabel className="mb-4" label={t('loginPage.password')}>
+                <FloatingLabel controlId="password" className="mb-4" label={t('loginPage.password')}>
                   <Form.Control
                     required
                     className={`form-control ${cn({ 'is-invalid': authFailed })}`}

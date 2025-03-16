@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import cn from 'classnames';
 import { useRef, useEffect } from 'react';
+import filter from 'leo-profanity';
 import { closeModal, setCurrentChannelId } from '../redux/store/uiSlice.js';
 import {
   useAddChannelMutation, useRemoveChannelMutation, useRenameChannelMutation, useGetChannelsQuery,
@@ -33,7 +34,7 @@ const AddingModalWindow = () => {
     validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
       try {
-        const { id } = await addChannel(values.inputValue).unwrap();
+        const { id } = await addChannel(filter.clean(values.inputValue)).unwrap();
         dispatch(setCurrentChannelId({ id }));
         toast(t('toast.channelAdded'), { type: 'success' });
         resetForm();
@@ -64,8 +65,9 @@ const AddingModalWindow = () => {
               type="text"
               isInvalid={formik.touched.inputValue && formik.errors.inputValue}
               ref={inputRef}
+              id="inputValue"
             />
-            <Form.Label column="sm" className="visually-hidden">{t('modal.addChannel.label')}</Form.Label>
+            <Form.Label htmlFor="inputValue" column="sm" className="visually-hidden">{t('modal.channelName')}</Form.Label>
             <Form.Control.Feedback type="invalid">{formik.errors.inputValue}</Form.Control.Feedback>
             <div className="d-flex justify-content-end">
               <Button onClick={() => dispatch(closeModal())} variant="secondary" className="me-2" type="button">
@@ -95,11 +97,11 @@ const RemovingModalWindow = () => {
   const deleteChannel = async (e) => {
     e.preventDefault();
     try {
-      dispatch(closeModal());
       const response = await removeChannel(extra.channelId);
       if (response.data.id === currentChannelId) {
         dispatch(setCurrentChannelId({ id: defaultChannelId }));
       }
+      dispatch(closeModal());
       toast(t('toast.channelRemoved'), { type: 'success' });
     } catch (error) {
       toast(t('toast.networkError'), { type: 'error' });
@@ -133,7 +135,7 @@ const RemovingModalWindow = () => {
 const RenamingModalWindow = () => {
   const { t } = useTranslation();
   const { data: channels = [] } = useGetChannelsQuery();
-  const { currentChannelId, modal: { extra: { channelName } } } = useSelector((state) => state.ui);
+  const { channelName, channelId } = useSelector((state) => state.ui.modal.extra);
   const dispatch = useDispatch();
   const [renameChannel] = useRenameChannelMutation();
   const inputRef = useRef();
@@ -153,7 +155,10 @@ const RenamingModalWindow = () => {
     validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
       try {
-        await renameChannel({ id: currentChannelId, name: values.inputValue }).unwrap();
+        await renameChannel({
+          id: channelId,
+          name: filter.clean(values.inputValue.trim()),
+        }).unwrap();
         toast(t('toast.channelRenamed'), { type: 'success' });
         resetForm();
         dispatch(closeModal());
@@ -185,8 +190,9 @@ const RenamingModalWindow = () => {
               type="text"
               isInvalid={formik.touched.inputValue && formik.errors.inputValue}
               ref={inputRef}
+              id="inputValue"
             />
-            <Form.Label column="sm" className="visually-hidden">{t('modal.addChannel.label')}</Form.Label>
+            <Form.Label htmlFor="inputValue" column="sm" className="visually-hidden">{t('modal.channelName')}</Form.Label>
             <Form.Control.Feedback type="invalid">{formik.errors.inputValue}</Form.Control.Feedback>
             <div className="d-flex justify-content-end">
               <Button onClick={() => dispatch(closeModal())} variant="secondary" className="me-2" type="button">

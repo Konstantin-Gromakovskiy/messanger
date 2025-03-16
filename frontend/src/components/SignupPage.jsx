@@ -24,7 +24,7 @@ const SignupPage = () => {
 
   const validationSchema = yup.object({
     username: yup.string().min(3, t('errors.min3max20')).max(20, t('errors.min3max20')).required(t('errors.required')),
-    password: yup.string().min(6, t('errors.min3max20')).required(t('errors.required')),
+    password: yup.string().min(6, t('errors.min6')).required(t('errors.required')),
     confirmPassword: yup.string().oneOf([yup.ref('password'), null], t('errors.oneOf')).required(t('errors.required')),
   });
 
@@ -71,7 +71,7 @@ const SignupPage = () => {
               <Form onSubmit={formik.handleSubmit} className="w-50">
                 <h1 className="text-center mb-4">{t('signupPage.title')}</h1>
                 <Form.Group className="mb-4">
-                  <FloatingLabel label={t('signupPage.username')}>
+                  <FloatingLabel controlId="username" label={t('signupPage.username')}>
                     <Form.Control
                       ref={inputNameRef}
                       required
@@ -88,7 +88,7 @@ const SignupPage = () => {
                   </FloatingLabel>
                 </Form.Group>
                 <Form.Group className="mb-4">
-                  <FloatingLabel label={t('signupPage.password')}>
+                  <FloatingLabel controlId="password" label={t('signupPage.password')}>
                     <Form.Control
                       required
                       type="password"
@@ -111,7 +111,7 @@ const SignupPage = () => {
                   >
                     {t('signupPage.confirmPassword')}
                   </Form.Label>
-                  <FloatingLabel label={t('signupPage.confirmPassword')}>
+                  <FloatingLabel controlId="confirmPassword" label={t('signupPage.confirmPassword')}>
                     <Form.Control
                       required
                       type="password"

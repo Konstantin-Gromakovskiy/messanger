@@ -2,14 +2,15 @@ const translation = {
   errors: {
     required: 'Обязательное поле',
     min3max20: 'От 3 до 20 символов',
+    min6: 'Не менее 6 символов',
     notUnique: 'Такое имя уже используется',
     authFailed: 'Неверные имя пользователя или пароль',
     oneOf: 'Пароли должны совпадать',
-    userExists: 'Пользователь уже существует',
+    userExists: 'Такой пользователь уже существует',
   },
   toast: {
     channelAdded: 'Канал создан',
-    channelRemoved: 'Канал удален',
+    channelRemoved: 'Канал удалён',
     channelRenamed: 'Канал переименован',
     networkError: 'Ошибка соединения',
     serverError: 'Сервер не отвечает',
@@ -39,6 +40,7 @@ const translation = {
     channels: 'Каналы',
     remove: 'Удалить',
     rename: 'Переименовать',
+    manage: 'Управление каналом',
   },
   chatContainer: {
     messages: {

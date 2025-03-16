@@ -43,7 +43,7 @@ const ChannelsList = () => {
             variant={channel.id === currentChannelId ? 'secondary' : 'light'}
             onClick={() => dispatch(setCurrentChannelId({ id: channel.id }))}
             type="button"
-            className={`w-100 text-start btn ${truncateClass(channel)}`}
+            className={`w-100 rounded-0 text-start ${truncateClass(channel)}`}
           >
             <span className="me-1">#</span>
             {channel.name}
@@ -58,7 +58,8 @@ const ChannelsList = () => {
                 <DropdownButton
                   variant={channel.id === currentChannelId ? 'secondary' : 'light'}
                   as={ButtonGroup}
-                  title=""
+                  title={<span className="visually-hidden">{t('mainPage.manage')}</span>}
+                  id="dropdownButton"
                 >
                   <Dropdown.Item
                     onClick={() => dispatch(openModal({ type: 'removeChannel', channelId: channel.id }))}
